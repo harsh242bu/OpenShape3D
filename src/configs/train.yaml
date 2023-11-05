@@ -2,11 +2,12 @@ project_name: 3D_CLIP
 clip_embed_dim: 1280
 clip_embed_version: OpenCLIP
 model:
-  name: MinkResNet34 
+  name: PointBERT 
   in_channel: 6
   out_channel: ${clip_embed_dim}
   embedding_channel: 1024
   voxel_size: 0.02
+  scaling: 4
 
 training:
   use_openclip_optimizer_scheduler: False

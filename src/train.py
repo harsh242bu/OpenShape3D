@@ -304,8 +304,7 @@ class Trainer(object):
                    "test_lvis/class_acc": per_cat_acc.mean(),
                    "test_lvis/top3_acc": topk_acc[1],
                    "test_lvis/top5_acc": topk_acc[2],})
-        
-        
+   
     def test_scanobjectnn(self):
         self.model.eval()
         if self.config.training.use_text_proj:
