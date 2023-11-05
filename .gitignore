@@ -3,3 +3,7 @@ mnt
 pretrained
 meta_data.zip
 meta_data
+src/eval_data
+# src/eval_data/ov_rgb.pt
+# src/eval_data/ov_xyz.pt
+# src/eval_data/ov_features.pt
