@@ -1,6 +1,7 @@
 from . import ppat
 
 def make(config):
+    print("Model name: ", config.model.name)
     if config.model.name == "PointBERT":
         model = ppat.make(config)
     elif config.model.name == "DGCNN":
@@ -19,6 +20,14 @@ def make(config):
         raise NotImplementedError("Model %s not supported." % config.model.name)
     return model
 
+def make_no_classification(config):
+    print("Model name: ", config.model.name)
+    if config.model.name == "PointBERT":
+        model = ppat.make_no_classification(config)
+    else:
+        raise NotImplementedError("Model %s not supported." % config.model.name)
+    return model
+    
 # def make_orig(config):
 #     if config.model.name == "MinkowskiFCNN":
 #         model = Minkowski.MinkowskiFCNN(config)

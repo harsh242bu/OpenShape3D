@@ -1,11 +1,17 @@
 import torch
+import time
 import numpy as np
 import wandb
 import logging
 import os
+import re
 import torch.distributed.nn
 import torch.nn.functional as F
 from tqdm import tqdm
+from collections import OrderedDict
+
+from utils_func import hf_hub_download
+
 
 class Trainer(object):
     def __init__(self, rank, config, model, logit_scale, image_proj, text_proj, optimizer, scheduler, train_loader, \
@@ -29,6 +35,8 @@ class Trainer(object):
         self.best_modelnet40_overall_acc = 0
         self.best_modelnet40_class_acc = 0
         self.best_lvis_acc = 0
+        if self.config.text_model == "vico":
+            self.vico_feat_dict = np.load(config.vico.dict_path, allow_pickle=True).item()
 
     def load_from_checkpoint(self, path):
         checkpoint = torch.load(path)
@@ -50,6 +58,45 @@ class Trainer(object):
         self.best_lvis_acc = checkpoint['best_lvis_acc']
 
         logging.info("Loaded checkpoint from {}".format(path))
+        logging.info("----Epoch: {0} Step: {1}".format(self.epoch, self.step))
+        logging.info("----Best img contras acc: {}".format(self.best_img_contras_acc))
+        logging.info("----Best text contras acc: {}".format(self.best_text_contras_acc))
+        logging.info("----Best modelnet40 overall acc: {}".format(self.best_modelnet40_overall_acc))
+        logging.info("----Best modelnet40 class acc: {}".format(self.best_modelnet40_class_acc))
+        logging.info("----Best lvis acc: {}".format(self.best_lvis_acc))
+    
+    def load_from_online(self, model_name):
+        print("Loading model: ", model_name)
+
+        checkpoint = torch.load(hf_hub_download(repo_id=model_name, filename="model.pt"))
+        model_dict = OrderedDict()
+        pattern = re.compile('module.')
+        for k,v in checkpoint['state_dict'].items():
+            if re.search("module", k):
+                model_dict[re.sub(pattern, '', k)] = v
+        self.model.load_state_dict(checkpoint['state_dict'])
+        # self.model.load_state_dict(model_dict)
+
+        # checkpoint = torch.load(path)
+        # self.model.load_state_dict(checkpoint['state_dict'])
+
+        if self.config.training.use_text_proj:
+            self.text_proj.load_state_dict(checkpoint['text_proj'])
+        if self.config.training.use_image_proj:
+            self.image_proj.load_state_dict(checkpoint['image_proj'])
+        self.logit_scale.load_state_dict(checkpoint['logit_scale']) #module.logit_scale = checkpoint['logit_scale']
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
+        if self.config.training.use_openclip_optimizer_scheduler == False:
+            self.scheduler.load_state_dict(checkpoint['scheduler'])
+        self.epoch = checkpoint['epoch']
+        self.step = checkpoint['step']
+        self.best_img_contras_acc = checkpoint['best_img_contras_acc']
+        self.best_text_contras_acc = checkpoint['best_text_contras_acc']
+        self.best_modelnet40_overall_acc = checkpoint['best_modelnet40_overall_acc']
+        self.best_modelnet40_class_acc = checkpoint['best_modelnet40_class_acc']
+        self.best_lvis_acc = checkpoint['best_lvis_acc']
+
+        # logging.info("Loaded checkpoint from {}".format(path))
         logging.info("----Epoch: {0} Step: {1}".format(self.epoch, self.step))
         logging.info("----Best img contras acc: {}".format(self.best_img_contras_acc))
         logging.info("----Best text contras acc: {}".format(self.best_text_contras_acc))
@@ -89,7 +136,10 @@ class Trainer(object):
             mask2 = np.kron(np.eye(s), np.ones((k, k))).astype(np.bool)
             mask_other = torch.from_numpy(np.logical_or(mask1, 1 - mask2)).bool().to(self.config.device)
 
+        # for data in tqdm(self.train_loader):
         for data in self.train_loader:
+            # print("xyz: ", data['xyz'].shape)
+            # print("features: ", data['features'].shape)
             self.step += 1
             self.optimizer.zero_grad()
             loss = 0
@@ -102,7 +152,12 @@ class Trainer(object):
             logit_scale = self.logit_scale(None)
             idx = data['has_text_idx']
 
-            text_feat = torch.vstack(data['text_feat']).to(self.config.device)
+            if self.config.text_model == "clip":
+                text_feat = torch.vstack(data['text_feat']).to(self.config.device)
+            elif self.config.text_model == "vico":
+                vico_feat = self.vico_feat_dict[data["category"]]
+                text_feat = torch.vstack(vico_feat).to(self.config.device)
+                
             img_feat = torch.vstack(data['img_feat']).to(self.config.device) 
 
             if self.config.training.use_mask:
@@ -134,19 +189,20 @@ class Trainer(object):
 
             if self.rank == 0 and self.step % self.config.training.log_freq == 0:
                 try:
-                    wandb.log({
-                        "train/loss": loss.item(),
-                        "train/text_contras_loss": text_contras_loss.item() if len(idx) > 0 else 0,
-                        "train/img_contras_loss": img_contras_loss.item(),
-                        "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
-                        "train/img_contras_acc": img_contras_acc.item(),
-                        "train/lr": self.optimizer.param_groups[0]['lr'],
-                        "train/epoch": self.epoch,
-                        "train/step": self.step,
-                        "train/logit_scale": logit_scale,
-                        "train/has_text": len(idx),
-                        "train/filtered_pair": (mask == False).sum() if mask is not None else 0
-                    })
+                    if self.config.wandb_key is not None:
+                        wandb.log({
+                            "train/loss": loss.item(),
+                            "train/text_contras_loss": text_contras_loss.item() if len(idx) > 0 else 0,
+                            "train/img_contras_loss": img_contras_loss.item(),
+                            "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
+                            "train/img_contras_acc": img_contras_acc.item(),
+                            "train/lr": self.optimizer.param_groups[0]['lr'],
+                            "train/epoch": self.epoch,
+                            "train/step": self.step,
+                            "train/logit_scale": logit_scale,
+                            "train/has_text": len(idx),
+                            "train/filtered_pair": (mask == False).sum() if mask is not None else 0
+                        })
                 except:
                     print("wandb log error", flush=True)
         if self.rank == 0: 
@@ -186,20 +242,30 @@ class Trainer(object):
                 correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
                 res.append(correct_k.mul_(100.0 / batch_size))
             return res, correct
-    
+
     def train(self):
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
             if self.rank == 0:
                 logging.info("Epoch: {}".format(self.epoch))
+            start_time = time.time()
             self.train_one_epoch()
+            time_per_epoch = int(time.time() - start_time)
+
+            formatted_time = "{:02}:{:02}:{:02}".format(
+                divmod(time_per_epoch, 3600)[0],
+                divmod(time_per_epoch, 60)[0] % 60,
+                time_per_epoch % 60,
+            )
+            print(f"Time taken for epoch {epoch}: {formatted_time}")
+            
             if self.rank == 0:
                 self.save_model('latest')
-                self.test_modelnet40()
-                self.test_objaverse_lvis()
+                # self.test_modelnet40()
+                # self.test_objaverse_lvis()
             if self.rank == 0 and self.epoch % self.config.training.save_freq == 0:
                 self.save_model('epoch_{}'.format(self.epoch))
-                        
+
     def test_modelnet40(self):
         self.model.eval()
         if self.config.training.use_text_proj:
@@ -248,12 +314,13 @@ class Trainer(object):
 
         logging.info('Test ModelNet40: overall acc: {0}({1}) class_acc: {2}({3})'.format(overall_acc, self.best_modelnet40_overall_acc, per_cat_acc.mean(), self.best_modelnet40_class_acc))
         logging.info('Test ModelNet40: top1_acc: {0} top3_acc: {1} top5_acc: {2}'.format(topk_acc[0].item(), topk_acc[1].item(), topk_acc[2].item()))
-        wandb.log({"test/epoch": self.epoch,
-                   "test/step": self.step,
-                   "test/ModelNet40_overall_acc": overall_acc,
-                   "test/ModelNet40_class_acc": per_cat_acc.mean(),
-                   "test/top3_acc": topk_acc[1],
-                   "test/top5_acc": topk_acc[2],})
+        if self.config.wandb_key is not None:
+            wandb.log({"test/epoch": self.epoch,
+                    "test/step": self.step,
+                    "test/ModelNet40_overall_acc": overall_acc,
+                    "test/ModelNet40_class_acc": per_cat_acc.mean(),
+                    "test/top3_acc": topk_acc[1],
+                    "test/top5_acc": topk_acc[2],})
 
     def test_objaverse_lvis(self):
         self.model.eval()
@@ -298,12 +365,13 @@ class Trainer(object):
 
         logging.info('Test ObjaverseLVIS: overall acc: {0} class_acc: {1}'.format(overall_acc, per_cat_acc.mean()))
         logging.info('Test ObjaverseLVIS: top1_acc: {0} top3_acc: {1} top5_acc: {2}'.format(topk_acc[0].item(), topk_acc[1].item(), topk_acc[2].item()))
-        wandb.log({"test_lvis/epoch": self.epoch,
-                   "test_lvis/step": self.step,
-                   "test_lvis/overall_acc": overall_acc,
-                   "test_lvis/class_acc": per_cat_acc.mean(),
-                   "test_lvis/top3_acc": topk_acc[1],
-                   "test_lvis/top5_acc": topk_acc[2],})
+        if self.config.wandb_key is not None:
+            wandb.log({"test_lvis/epoch": self.epoch,
+                    "test_lvis/step": self.step,
+                    "test_lvis/overall_acc": overall_acc,
+                    "test_lvis/class_acc": per_cat_acc.mean(),
+                    "test_lvis/top3_acc": topk_acc[1],
+                    "test_lvis/top5_acc": topk_acc[2],})
    
     def test_scanobjectnn(self):
         self.model.eval()
@@ -345,9 +413,10 @@ class Trainer(object):
 
         logging.info('Test ScanObjectNN: overall acc: {0} class_acc: {1}'.format(overall_acc, per_cat_acc.mean()))
         logging.info('Test ScanObjectNN: top1_acc: {0} top3_acc: {1} top5_acc: {2}'.format(topk_acc[0].item(), topk_acc[1].item(), topk_acc[2].item()))
-        wandb.log({"test_scanobjectnn/epoch": self.epoch,
-                   "test_scanobjectnn/step": self.step,
-                   "test_scanobjectnn/overall_acc": overall_acc,
-                   "test_scanobjectnn/class_acc": per_cat_acc.mean(),
-                   "test_scanobjectnn/top3_acc": topk_acc[1],
-                   "test_scanobjectnn/top5_acc": topk_acc[2],})
+        if self.config.wandb_key is not None:
+            wandb.log({"test_scanobjectnn/epoch": self.epoch,
+                    "test_scanobjectnn/step": self.step,
+                    "test_scanobjectnn/overall_acc": overall_acc,
+                    "test_scanobjectnn/class_acc": per_cat_acc.mean(),
+                    "test_scanobjectnn/top3_acc": topk_acc[1],
+                    "test_scanobjectnn/top5_acc": topk_acc[2],})

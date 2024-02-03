@@ -1,6 +1,7 @@
 project_name: 3D_CLIP
 clip_embed_dim: 1280
 clip_embed_version: OpenCLIP
+vico_embed_dim: 500
 model:
   name: PointBERT 
   in_channel: 6
@@ -35,7 +36,8 @@ dataset:
   train_partial: -1
   num_points: 10000 
   num_workers: 6
-  train_batch_size: 200
+  train_batch_size: 150
+  test_batch_size: 100
   use_knn_negative_sample: False
   negative_sample_num: 1
   knn_path: meta_data/point_feat_knn.npy
@@ -55,7 +57,7 @@ modelnet40:
   test_pc: meta_data/modelnet40/test_pc.npy
   num_points: 10000 
   num_workers: 0
-  test_batch_size: 50
+  test_batch_size: 100
   clip_feat_path: meta_data/modelnet40/cat_name_pt_feat.npy
   y_up: True
 
@@ -64,8 +66,7 @@ objaverse_lvis:
     clip_feat_path: meta_data/lvis_cat_name_pt_feat.npy
     num_points: 10000 
     num_workers: 6
-    # batch_size: 160
-    batch_size: 120
+    batch_size: 100
     y_up: True
     normalize: True
     use_color: True

@@ -1,0 +1,832 @@
+{
+    "464": [
+        {
+            "uid": "5e0cae17f48d4c53abca15eaebddc5fb",
+            "group": "000-036",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-036/5e0cae17f48d4c53abca15eaebddc5fb.npy"
+        },
+        {
+            "uid": "e619738ee34d48a18ed61201184a877e",
+            "group": "000-038",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-038/e619738ee34d48a18ed61201184a877e.npy"
+        },
+        {
+            "uid": "f45b0d0154ad4abf814b05e55ede0c60",
+            "group": "000-075",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-075/f45b0d0154ad4abf814b05e55ede0c60.npy"
+        },
+        {
+            "uid": "9a6bd7edfc414b0c964d1a12e16a2cf1",
+            "group": "000-104",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-104/9a6bd7edfc414b0c964d1a12e16a2cf1.npy"
+        },
+        {
+            "uid": "f818484ff04e47a7ace688faa5015a55",
+            "group": "000-035",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-035/f818484ff04e47a7ace688faa5015a55.npy"
+        },
+        {
+            "uid": "071e439aee854058946e537949bf665e",
+            "group": "000-103",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-103/071e439aee854058946e537949bf665e.npy"
+        },
+        {
+            "uid": "5adcbf784df540a0b46dae8950bd3ec6",
+            "group": "000-132",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-132/5adcbf784df540a0b46dae8950bd3ec6.npy"
+        },
+        {
+            "uid": "319376f14ac644759cc5f8fae239d6be",
+            "group": "000-070",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-070/319376f14ac644759cc5f8fae239d6be.npy"
+        },
+        {
+            "uid": "cfcdd311ad8b4c358ebcb354551d7a6d",
+            "group": "000-130",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-130/cfcdd311ad8b4c358ebcb354551d7a6d.npy"
+        },
+        {
+            "uid": "d9a7e407c64a499d812487043c4437e5",
+            "group": "000-005",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-005/d9a7e407c64a499d812487043c4437e5.npy"
+        },
+        {
+            "uid": "9afccd18cf294158b9ef976cd9c7bbf8",
+            "group": "000-009",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-009/9afccd18cf294158b9ef976cd9c7bbf8.npy"
+        },
+        {
+            "uid": "3564578cde5c42279ead680df1619e3c",
+            "group": "000-023",
+            "category": "goldfish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-023/3564578cde5c42279ead680df1619e3c.npy"
+        }
+    ],
+    "409": [
+        {
+            "uid": "115a4de0551b4caa9ff726d263dceaeb",
+            "group": "000-151",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-151/115a4de0551b4caa9ff726d263dceaeb.npy"
+        },
+        {
+            "uid": "610d94b2f85843b68404b6e69e58cb3d",
+            "group": "000-136",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-136/610d94b2f85843b68404b6e69e58cb3d.npy"
+        },
+        {
+            "uid": "cee999f004da4194adf42b351306499f",
+            "group": "000-140",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-140/cee999f004da4194adf42b351306499f.npy"
+        },
+        {
+            "uid": "6ed5f68246594b87b33c7504939b9031",
+            "group": "000-142",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-142/6ed5f68246594b87b33c7504939b9031.npy"
+        },
+        {
+            "uid": "81d01e6ce8f745778e2629bca80724af",
+            "group": "000-021",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-021/81d01e6ce8f745778e2629bca80724af.npy"
+        },
+        {
+            "uid": "0f45a8874b234efcb59e3a3268f750b5",
+            "group": "000-057",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-057/0f45a8874b234efcb59e3a3268f750b5.npy"
+        },
+        {
+            "uid": "4dcf61939c924f1a8220fb589fbe62f2",
+            "group": "000-095",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-095/4dcf61939c924f1a8220fb589fbe62f2.npy"
+        },
+        {
+            "uid": "8de4f08f281244b5bf7f77e8319dd91f",
+            "group": "000-060",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-060/8de4f08f281244b5bf7f77e8319dd91f.npy"
+        },
+        {
+            "uid": "20afe3d907d745a2add9a4b59a1aa29a",
+            "group": "000-002",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-002/20afe3d907d745a2add9a4b59a1aa29a.npy"
+        },
+        {
+            "uid": "2e6a081a99134030908ef400861ecf92",
+            "group": "000-031",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-031/2e6a081a99134030908ef400861ecf92.npy"
+        },
+        {
+            "uid": "dbd6e256d4204ac3b78cbc1e16269198",
+            "group": "000-058",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-058/dbd6e256d4204ac3b78cbc1e16269198.npy"
+        },
+        {
+            "uid": "655237b93d464cdcb499d3390ced7ff5",
+            "group": "000-056",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-056/655237b93d464cdcb499d3390ced7ff5.npy"
+        },
+        {
+            "uid": "32ea63905dac448dbc3378062da95641",
+            "group": "000-050",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-050/32ea63905dac448dbc3378062da95641.npy"
+        },
+        {
+            "uid": "b6ef6a2eb1024e7bb5aba7755568a074",
+            "group": "000-125",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-125/b6ef6a2eb1024e7bb5aba7755568a074.npy"
+        },
+        {
+            "uid": "7a75c224806a4d04a7a9ebba517ad100",
+            "group": "000-027",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-027/7a75c224806a4d04a7a9ebba517ad100.npy"
+        },
+        {
+            "uid": "76ae94ce183640f68f0fec2f135521b1",
+            "group": "000-151",
+            "category": "fish",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-151/76ae94ce183640f68f0fec2f135521b1.npy"
+        }
+    ],
+    "861": [
+        {
+            "uid": "932cba65e5c84bb6b782fd07067a704e",
+            "group": "000-074",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-074/932cba65e5c84bb6b782fd07067a704e.npy"
+        },
+        {
+            "uid": "c9bcb782e5ef4d37bd8671f1f82a0fbc",
+            "group": "000-014",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-014/c9bcb782e5ef4d37bd8671f1f82a0fbc.npy"
+        },
+        {
+            "uid": "44d4c3e01dc7479c8225ddfab3dfc8a6",
+            "group": "000-058",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-058/44d4c3e01dc7479c8225ddfab3dfc8a6.npy"
+        },
+        {
+            "uid": "25a90ce47f7142a9ae6918149abff3af",
+            "group": "000-056",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-056/25a90ce47f7142a9ae6918149abff3af.npy"
+        },
+        {
+            "uid": "7accf73c2b754ec1a969af691368c270",
+            "group": "000-107",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-107/7accf73c2b754ec1a969af691368c270.npy"
+        },
+        {
+            "uid": "99bae43fca9049c3964d20099906d14e",
+            "group": "000-159",
+            "category": "salmon_(fish)",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-159/99bae43fca9049c3964d20099906d14e.npy"
+        }
+    ],
+    "372": [
+        {
+            "uid": "0570fda0b76d4a088bb30dc8d625442d",
+            "group": "000-000",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/0570fda0b76d4a088bb30dc8d625442d.npy"
+        },
+        {
+            "uid": "a1ccf71e9ff94b3b8c2d58a9549837e7",
+            "group": "000-003",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-003/a1ccf71e9ff94b3b8c2d58a9549837e7.npy"
+        },
+        {
+            "uid": "08469acefe724b7faf5ccaf4c57aefd1",
+            "group": "000-093",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-093/08469acefe724b7faf5ccaf4c57aefd1.npy"
+        },
+        {
+            "uid": "54ac2cd65c1d42c3a64fc64af0eb554b",
+            "group": "000-093",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-093/54ac2cd65c1d42c3a64fc64af0eb554b.npy"
+        },
+        {
+            "uid": "ec880a582a77461e9c95c639a06cc376",
+            "group": "000-104",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-104/ec880a582a77461e9c95c639a06cc376.npy"
+        },
+        {
+            "uid": "726c092db62b4a79b31026e81e73147d",
+            "group": "000-111",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-111/726c092db62b4a79b31026e81e73147d.npy"
+        },
+        {
+            "uid": "1ccbf4317dad40458ae84f2224eafa72",
+            "group": "000-155",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-155/1ccbf4317dad40458ae84f2224eafa72.npy"
+        },
+        {
+            "uid": "e0f1e693070f4a84bdddd18023b17e12",
+            "group": "000-094",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-094/e0f1e693070f4a84bdddd18023b17e12.npy"
+        },
+        {
+            "uid": "17e6280d7c2f4eeca12a8caac812b539",
+            "group": "000-080",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-080/17e6280d7c2f4eeca12a8caac812b539.npy"
+        },
+        {
+            "uid": "c0b33a7cbd184b82943db196052a0f52",
+            "group": "000-085",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-085/c0b33a7cbd184b82943db196052a0f52.npy"
+        },
+        {
+            "uid": "e99c2e4c5de64ac99b20755c7da2572d",
+            "group": "000-144",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-144/e99c2e4c5de64ac99b20755c7da2572d.npy"
+        },
+        {
+            "uid": "4d5a3dfc6ff04091b1f0b2bf1375fc3f",
+            "group": "000-002",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-002/4d5a3dfc6ff04091b1f0b2bf1375fc3f.npy"
+        },
+        {
+            "uid": "03352d911acd496e9b53968961234d5d",
+            "group": "000-000",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/03352d911acd496e9b53968961234d5d.npy"
+        },
+        {
+            "uid": "076f21619c614b5db750544e959b9ba2",
+            "group": "000-016",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-016/076f21619c614b5db750544e959b9ba2.npy"
+        },
+        {
+            "uid": "82c369c76d634c3ba46db8ce36b38c7d",
+            "group": "000-074",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-074/82c369c76d634c3ba46db8ce36b38c7d.npy"
+        },
+        {
+            "uid": "89afb4636fa44e37ad688f0563ff4723",
+            "group": "000-127",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-127/89afb4636fa44e37ad688f0563ff4723.npy"
+        },
+        {
+            "uid": "8fc692e7f5d049558dba26b275e744f9",
+            "group": "000-114",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-114/8fc692e7f5d049558dba26b275e744f9.npy"
+        },
+        {
+            "uid": "1b1b223e06644688a7593b82eb37ab1b",
+            "group": "000-094",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-094/1b1b223e06644688a7593b82eb37ab1b.npy"
+        },
+        {
+            "uid": "5bca4779ad2146c78fd2d988b055509e",
+            "group": "000-053",
+            "category": "earphone",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-053/5bca4779ad2146c78fd2d988b055509e.npy"
+        }
+    ],
+    "510": [
+        {
+            "uid": "89c82681f8a0452998f1325fe78454c3",
+            "group": "000-021",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-021/89c82681f8a0452998f1325fe78454c3.npy"
+        },
+        {
+            "uid": "ee00e4ecbb8e44f2b483dd6b092ff817",
+            "group": "000-141",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-141/ee00e4ecbb8e44f2b483dd6b092ff817.npy"
+        },
+        {
+            "uid": "17ed1a8c68584cc381b1120729e6177e",
+            "group": "000-012",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-012/17ed1a8c68584cc381b1120729e6177e.npy"
+        },
+        {
+            "uid": "2708f98b7bef49b2ad95db3f9b48bdca",
+            "group": "000-154",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-154/2708f98b7bef49b2ad95db3f9b48bdca.npy"
+        },
+        {
+            "uid": "af4e6161f074465782f7aefe9df2c943",
+            "group": "000-145",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-145/af4e6161f074465782f7aefe9df2c943.npy"
+        },
+        {
+            "uid": "19612447cf644f559e5bb2341ec86153",
+            "group": "000-020",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-020/19612447cf644f559e5bb2341ec86153.npy"
+        },
+        {
+            "uid": "ba8a3dc8f2754176adb3f25e5e10ddc8",
+            "group": "000-139",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-139/ba8a3dc8f2754176adb3f25e5e10ddc8.npy"
+        },
+        {
+            "uid": "cce68f42b316473cb92e5f18a80c38dd",
+            "group": "000-063",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-063/cce68f42b316473cb92e5f18a80c38dd.npy"
+        },
+        {
+            "uid": "b4f4e2fcacec4ebcbdbd8f55bf9f3f67",
+            "group": "000-087",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-087/b4f4e2fcacec4ebcbdbd8f55bf9f3f67.npy"
+        },
+        {
+            "uid": "c222c11591104696aa70eee471194acc",
+            "group": "000-075",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-075/c222c11591104696aa70eee471194acc.npy"
+        },
+        {
+            "uid": "46fce676fc5c41b8801309c3dbb3aed8",
+            "group": "000-058",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-058/46fce676fc5c41b8801309c3dbb3aed8.npy"
+        },
+        {
+            "uid": "71f421347c224f19b757f507be6a016a",
+            "group": "000-050",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-050/71f421347c224f19b757f507be6a016a.npy"
+        },
+        {
+            "uid": "ddea9b66b7bd46949316a38ad677efa7",
+            "group": "000-049",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-049/ddea9b66b7bd46949316a38ad677efa7.npy"
+        },
+        {
+            "uid": "8bfa354e4afb4d95b2274a7b45cf4986",
+            "group": "000-080",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-080/8bfa354e4afb4d95b2274a7b45cf4986.npy"
+        },
+        {
+            "uid": "4183c8164e7c4336a44899feb51aaeaa",
+            "group": "000-151",
+            "category": "headset",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-151/4183c8164e7c4336a44899feb51aaeaa.npy"
+        }
+    ],
+    "106": [
+        {
+            "uid": "7641b507fa82442d837dccee5c20a41d",
+            "group": "000-088",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-088/7641b507fa82442d837dccee5c20a41d.npy"
+        },
+        {
+            "uid": "a627549afa71416590085ee4f9285563",
+            "group": "000-043",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-043/a627549afa71416590085ee4f9285563.npy"
+        },
+        {
+            "uid": "008a72f0e6be408cbf90c81966789547",
+            "group": "000-000",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/008a72f0e6be408cbf90c81966789547.npy"
+        },
+        {
+            "uid": "237d3ea13cba4b059e513557aae3cf74",
+            "group": "000-043",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-043/237d3ea13cba4b059e513557aae3cf74.npy"
+        },
+        {
+            "uid": "fa46b58fcad24c1cbcd49005fa6ae392",
+            "group": "000-004",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-004/fa46b58fcad24c1cbcd49005fa6ae392.npy"
+        },
+        {
+            "uid": "3def0627dbfc4b98b5b462a2166efc38",
+            "group": "000-015",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-015/3def0627dbfc4b98b5b462a2166efc38.npy"
+        },
+        {
+            "uid": "044fd1407ba2472fbec638479142ac22",
+            "group": "000-000",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/044fd1407ba2472fbec638479142ac22.npy"
+        },
+        {
+            "uid": "996c8d78905f433183ac368086580f82",
+            "group": "000-116",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-116/996c8d78905f433183ac368086580f82.npy"
+        },
+        {
+            "uid": "3338cda4fe694bc8869b7c587c078246",
+            "group": "000-006",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-006/3338cda4fe694bc8869b7c587c078246.npy"
+        },
+        {
+            "uid": "256197374670492f8ca1c1a954b2978f",
+            "group": "000-033",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-033/256197374670492f8ca1c1a954b2978f.npy"
+        },
+        {
+            "uid": "2228274a55364ba7b668acf7ad7508ac",
+            "group": "000-157",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-157/2228274a55364ba7b668acf7ad7508ac.npy"
+        },
+        {
+            "uid": "3f3e204cb66b4189a3c6a7e66b4d27f1",
+            "group": "000-024",
+            "category": "blazer",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-024/3f3e204cb66b4189a3c6a7e66b4d27f1.npy"
+        }
+    ],
+    "548": [
+        {
+            "uid": "86bc7207cbe34ab787bf5a0cd66b988a",
+            "group": "000-018",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-018/86bc7207cbe34ab787bf5a0cd66b988a.npy"
+        },
+        {
+            "uid": "9aed1de5f9434435a461c597360d9a91",
+            "group": "000-037",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-037/9aed1de5f9434435a461c597360d9a91.npy"
+        },
+        {
+            "uid": "79a64236f0b74d78bfa2db18a1c68887",
+            "group": "000-065",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-065/79a64236f0b74d78bfa2db18a1c68887.npy"
+        },
+        {
+            "uid": "b4954fa4806d44629a8848137c46690d",
+            "group": "000-073",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-073/b4954fa4806d44629a8848137c46690d.npy"
+        },
+        {
+            "uid": "bd09405bd03549238f69b34d43340d13",
+            "group": "000-054",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-054/bd09405bd03549238f69b34d43340d13.npy"
+        },
+        {
+            "uid": "38716613af0049e6bf0e54e71005e43a",
+            "group": "000-096",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-096/38716613af0049e6bf0e54e71005e43a.npy"
+        },
+        {
+            "uid": "52b81c6795274dc5ae0093c068e50a4d",
+            "group": "000-108",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-108/52b81c6795274dc5ae0093c068e50a4d.npy"
+        },
+        {
+            "uid": "dac833fdcf8d4c53946a3dad575d2c3d",
+            "group": "000-127",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-127/dac833fdcf8d4c53946a3dad575d2c3d.npy"
+        },
+        {
+            "uid": "0e002a354ac143a5845463ba92cb27aa",
+            "group": "000-054",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-054/0e002a354ac143a5845463ba92cb27aa.npy"
+        },
+        {
+            "uid": "c10266c3ff8c4fa18332f03ed5d0b3e6",
+            "group": "000-038",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-038/c10266c3ff8c4fa18332f03ed5d0b3e6.npy"
+        },
+        {
+            "uid": "794712e7d8a14367bafbeb2864f2695e",
+            "group": "000-022",
+            "category": "jacket",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-022/794712e7d8a14367bafbeb2864f2695e.npy"
+        }
+    ],
+    "1019": [
+        {
+            "uid": "70b545688f9e4b26a7253250352b7ffc",
+            "group": "000-133",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-133/70b545688f9e4b26a7253250352b7ffc.npy"
+        },
+        {
+            "uid": "713a1d5203a1423285c789fa0531ad62",
+            "group": "000-146",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-146/713a1d5203a1423285c789fa0531ad62.npy"
+        },
+        {
+            "uid": "5bca086ba85f4a31b56762ef1947a0af",
+            "group": "000-126",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-126/5bca086ba85f4a31b56762ef1947a0af.npy"
+        },
+        {
+            "uid": "0772a648d4af4f56a74999169bcebd57",
+            "group": "000-016",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-016/0772a648d4af4f56a74999169bcebd57.npy"
+        },
+        {
+            "uid": "1230444ce2e149f4a76061ab1010f56e",
+            "group": "000-008",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-008/1230444ce2e149f4a76061ab1010f56e.npy"
+        },
+        {
+            "uid": "4c1a869fb8a940e5ac292530926b6cd4",
+            "group": "000-130",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-130/4c1a869fb8a940e5ac292530926b6cd4.npy"
+        },
+        {
+            "uid": "d3307264b4b14e079ba5c861eeac839e",
+            "group": "000-048",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-048/d3307264b4b14e079ba5c861eeac839e.npy"
+        },
+        {
+            "uid": "75386b041bde489a9f164be51791d1db",
+            "group": "000-058",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-058/75386b041bde489a9f164be51791d1db.npy"
+        },
+        {
+            "uid": "26933ed5bd29435ebdccc9bfd58b9d49",
+            "group": "000-146",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-146/26933ed5bd29435ebdccc9bfd58b9d49.npy"
+        },
+        {
+            "uid": "911fcbe1df084b58ac03d405d1c7bd94",
+            "group": "000-076",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-076/911fcbe1df084b58ac03d405d1c7bd94.npy"
+        },
+        {
+            "uid": "b700b310e0f64567a47f554e3a2c465a",
+            "group": "000-049",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-049/b700b310e0f64567a47f554e3a2c465a.npy"
+        },
+        {
+            "uid": "3dc9f840d2d648118551670bb9a5f0cc",
+            "group": "000-047",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-047/3dc9f840d2d648118551670bb9a5f0cc.npy"
+        },
+        {
+            "uid": "ae6833510f8f4e14b09477472ddbe3b8",
+            "group": "000-007",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-007/ae6833510f8f4e14b09477472ddbe3b8.npy"
+        },
+        {
+            "uid": "c5792e9c68464dc0952a2ac9c463e1dc",
+            "group": "000-036",
+            "category": "teakettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-036/c5792e9c68464dc0952a2ac9c463e1dc.npy"
+        }
+    ],
+    "1020": [
+        {
+            "uid": "ae7680893dfc48099a5b28c1455bc88c",
+            "group": "000-151",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-151/ae7680893dfc48099a5b28c1455bc88c.npy"
+        },
+        {
+            "uid": "92c8f249632d4424aeaa57944a5ffad0",
+            "group": "000-097",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-097/92c8f249632d4424aeaa57944a5ffad0.npy"
+        },
+        {
+            "uid": "b6cbfcecbb044cd38b9f6f2c36b6d866",
+            "group": "000-149",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-149/b6cbfcecbb044cd38b9f6f2c36b6d866.npy"
+        },
+        {
+            "uid": "0f49e27fe9c54065b9d1d1a08ff97f46",
+            "group": "000-082",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-082/0f49e27fe9c54065b9d1d1a08ff97f46.npy"
+        },
+        {
+            "uid": "3386cee12f9e427a8b8e6a383083ead4",
+            "group": "000-071",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-071/3386cee12f9e427a8b8e6a383083ead4.npy"
+        },
+        {
+            "uid": "aa191cdb735e4999b066b2f848ad9acc",
+            "group": "000-009",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-009/aa191cdb735e4999b066b2f848ad9acc.npy"
+        },
+        {
+            "uid": "17fa66f2280043e6b34e4f93516f289c",
+            "group": "000-128",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-128/17fa66f2280043e6b34e4f93516f289c.npy"
+        },
+        {
+            "uid": "7337db178c83485c923863164e3633c4",
+            "group": "000-058",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-058/7337db178c83485c923863164e3633c4.npy"
+        },
+        {
+            "uid": "0567ae8c25954f43b03fc5b5264c3fcf",
+            "group": "000-000",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/0567ae8c25954f43b03fc5b5264c3fcf.npy"
+        },
+        {
+            "uid": "766b9386506c40c7862a9b32234298c2",
+            "group": "000-152",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-152/766b9386506c40c7862a9b32234298c2.npy"
+        },
+        {
+            "uid": "0afbd92ceee74327b2613284f6dcfaa7",
+            "group": "000-042",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-042/0afbd92ceee74327b2613284f6dcfaa7.npy"
+        },
+        {
+            "uid": "bebb9f4cd0554f139556ef5700f99d00",
+            "group": "000-133",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-133/bebb9f4cd0554f139556ef5700f99d00.npy"
+        },
+        {
+            "uid": "7846c390707e49d2a0e601ee748aae9b",
+            "group": "000-059",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-059/7846c390707e49d2a0e601ee748aae9b.npy"
+        },
+        {
+            "uid": "03d34765519a4121ac645f35ad742340",
+            "group": "000-000",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-000/03d34765519a4121ac645f35ad742340.npy"
+        },
+        {
+            "uid": "bacaa33407474fc684c82fe7929535ff",
+            "group": "000-008",
+            "category": "teapot",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-008/bacaa33407474fc684c82fe7929535ff.npy"
+        }
+    ],
+    "562": [
+        {
+            "uid": "5d2692dfcb154cf6b62f558ef5b2a829",
+            "group": "000-082",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-082/5d2692dfcb154cf6b62f558ef5b2a829.npy"
+        },
+        {
+            "uid": "f640e3f4e2224643b76646b6847622a4",
+            "group": "000-114",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-114/f640e3f4e2224643b76646b6847622a4.npy"
+        },
+        {
+            "uid": "6db334d133174099940e34706ccac451",
+            "group": "000-020",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-020/6db334d133174099940e34706ccac451.npy"
+        },
+        {
+            "uid": "1c544dfbf2344889bb7b91edbf71502a",
+            "group": "000-151",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-151/1c544dfbf2344889bb7b91edbf71502a.npy"
+        },
+        {
+            "uid": "05dafa582db84ae6a675533c73a3600a",
+            "group": "000-064",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-064/05dafa582db84ae6a675533c73a3600a.npy"
+        },
+        {
+            "uid": "0c55bd8e29384070a72c33ef744d11be",
+            "group": "000-049",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-049/0c55bd8e29384070a72c33ef744d11be.npy"
+        },
+        {
+            "uid": "153cd8b6d4094e9c95a4c3addbeb118c",
+            "group": "000-004",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-004/153cd8b6d4094e9c95a4c3addbeb118c.npy"
+        },
+        {
+            "uid": "46376f79fe094112b639f06c6661e0cb",
+            "group": "000-037",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-037/46376f79fe094112b639f06c6661e0cb.npy"
+        },
+        {
+            "uid": "e8221482c1a74687813f866c52f01abf",
+            "group": "000-061",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-061/e8221482c1a74687813f866c52f01abf.npy"
+        },
+        {
+            "uid": "21a4253e142345e8a43b128d2b3fb496",
+            "group": "000-083",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-083/21a4253e142345e8a43b128d2b3fb496.npy"
+        },
+        {
+            "uid": "4d734a2b31c54e28a05fc94a2745047a",
+            "group": "000-105",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-105/4d734a2b31c54e28a05fc94a2745047a.npy"
+        },
+        {
+            "uid": "fa6e0f0571a04db1a10eba21ba4932d8",
+            "group": "000-045",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-045/fa6e0f0571a04db1a10eba21ba4932d8.npy"
+        },
+        {
+            "uid": "ef4bc2b9b457445188f619a7befedfcc",
+            "group": "000-052",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-052/ef4bc2b9b457445188f619a7befedfcc.npy"
+        },
+        {
+            "uid": "ae214be8d5984abd8fb04c9bd1e4f444",
+            "group": "000-145",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-145/ae214be8d5984abd8fb04c9bd1e4f444.npy"
+        },
+        {
+            "uid": "7f675086fa7145dd912f272218f05971",
+            "group": "000-083",
+            "category": "kettle",
+            "data_path": "/mnt/data/objaverse-processed/merged_for_training_final/Objaverse/000-083/7f675086fa7145dd912f272218f05971.npy"
+        }
+    ]
+}

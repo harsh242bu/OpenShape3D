@@ -118,6 +118,44 @@ class Projected(nn.Module):
             xyz.transpose(-1, -2).contiguous(), features.transpose(-1, -2).contiguous()
         ))
 
+class ProjectedNoClassification(nn.Module):
+    def __init__(self, ppat) -> None:
+        super().__init__()
+        self.ppat = ppat
+
+    def forward(self, xyz: torch.Tensor, features: torch.Tensor, device=None, quantization_size=0.05):
+        return self.ppat(
+            xyz.transpose(-1, -2).contiguous(), features.transpose(-1, -2).contiguous()
+        )
+
+def make_no_classification(cfg):
+    scaling = cfg.model.scaling
+    if scaling == 1:
+        return ProjectedNoClassification(
+            PointPatchTransformer(256, 6, 4, 1024, 96, 64, 0.4, 256, cfg.model.in_channel)
+        )
+    if scaling == 2:
+        return ProjectedNoClassification(
+            PointPatchTransformer(512, 6, 8, 1024, 128, 64, 0.4, 256, cfg.model.in_channel)
+        )
+    if scaling == 3:
+        return ProjectedNoClassification(
+            PointPatchTransformer(512, 12, 8, 1024, 128, 128, 0.35, 128, cfg.model.in_channel)
+        )
+    if scaling == 4:
+        return ProjectedNoClassification(
+            PointPatchTransformer(512, 12, 8, 512*3, 256, 384, 0.2, 64, cfg.model.in_channel)
+        )
+    if scaling == 5:
+        return ProjectedNoClassification(
+            PointPatchTransformer(768, 12, 12, 768*3, 256, 512, 0.2, 64, cfg.model.in_channel)
+        )
+    if scaling == 6:
+        return ProjectedNoClassification(
+            PointPatchTransformer(768, 24, 12, 768*4, 256, 512, 0.2, 64, cfg.model.in_channel)
+        )
+    raise ValueError(scaling)
+            
 
 def make(cfg):
     scaling = cfg.model.scaling

@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-from tqdm import tqdm
+import tqdm
 import numpy as np
 import random
 import json
@@ -9,7 +9,84 @@ import json
 from utils.data import normalize_pc
 from utils_func import calc_accuracy
 
-class ObjaverseLVIS(Dataset):
+OMNI_HDF5_DIR = "/projectnb/ivc-ml/harshk/3d_perception/OmniObject3D/data/OpenXD-OmniObject3D-New/raw/point_clouds/hdf5_files/1024"
+OMNI_PLY_DIR = "/projectnb/ivc-ml/harshk/3d_perception/OmniObject3D/data/OpenXD-OmniObject3D-New/raw/point_clouds/ply_files"
+
+def load_omni_hdf5_data(num_points = 1024):
+    # common_objs = get_objects("/projectnb/ivc-ml/harshk/3d_perception/common_objs.json")
+    # modelnet_objs = get_objects("/projectnb/ivc-ml/harshk/3d_perception/modelnet_objs.json")
+    omni_dict = np.load("../meta_data/omni_dict.npy", allow_pickle=True).item()
+    idx2category = omni_dict['idx2category']
+    category2idx = omni_dict['category2idx']
+    keys = list(category2idx.keys())
+
+    all_data = []
+    all_label = []
+    omni_list = os.listdir(OMNI_HDF5_DIR)
+
+    for fname in omni_list:
+        obj = fname.split('_')[0]
+        if obj in keys:
+            f = h5py.File(os.path.join(OMNI_HDF5_DIR, obj+"_" + str(num_points) + ".hdf5"), 'r+')
+            data = f['data'][0].astype('float64')
+            idx = category2idx[obj]
+            
+            # label = f['label'][:].astype('int64')
+            f.close()
+            # print("data-shape: ", data.shape)
+            all_data.append([data])
+            all_label.append([idx])
+    all_data = np.concatenate(all_data, axis=0)
+    all_label = np.concatenate(all_label, axis=0)
+
+    print("all_data: ", all_data.shape)
+    print("all_label: ", all_label.shape)
+    print(all_label)
+
+    return all_data, all_label
+
+def load_omni_ply_data(num_points = 1024):
+    point_dir = os.path.join(OMNI_PLY_DIR, str(num_points))
+    omni_dict = np.load("../meta_data/omni_dict.npy", allow_pickle=True).item()
+    idx2category = omni_dict['idx2category']
+    category2idx = omni_dict['category2idx']
+    keys = list(category2idx.keys())
+
+    all_data = []
+    all_label = []
+    obj_list = os.listdir(point_dir)
+
+    for obj in obj_list:
+        if obj in keys:
+            obj_label = category2idx[obj]
+            sub_dir = os.path.join(point_dir, obj)
+            # print("sub_dir: ", sub_dir)
+            instance_list = os.listdir(sub_dir)
+            for ins in instance_list:
+                ins_np = np.zeros((num_points, 3))
+                ins_dir = os.path.join(sub_dir, ins)
+                # print("ins_dir: ", ins_dir)
+                ply_file = os.path.join(ins_dir, "pcd_" + str(num_points) + ".ply")
+                # print("ply_file: ", ply_file)
+                if os.path.exists(ply_file):
+                    plydata = PlyData.read(ply_file)
+                    ins_np[:, 0] = plydata['vertex']['x']
+                    ins_np[:, 1] = plydata['vertex']['y']
+                    ins_np[:, 2] = plydata['vertex']['z']
+                    
+                    all_data.append([ins_np])
+                    all_label.append([obj_label])
+
+    all_data = np.concatenate(all_data, axis=0)
+    all_label = np.concatenate(all_label, axis=0)
+
+    print("all_data: ", all_data.shape)
+    print("all_label: ", all_label.shape)
+    # print(all_label)
+
+    return all_data, all_label
+    
+class OmniObject3D(Dataset):
     def __init__(self, config):
         self.split = json.load(open(config.objaverse_lvis.split, "r"))
         self.y_up = config.objaverse_lvis.y_up
@@ -102,22 +179,21 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
     # clip_text_feat:  torch.Size([1156, 1280])
     # logits:  torch.Size([70, 1156])
     # lables:  torch.Size([70])
-    runs = 0
+
     with torch.no_grad():
-        for data in tqdm(objaverse_lvis_loader):
+        for data in objaverse_lvis_loader:
             # if not config.model.get("use_dense", False):
             #     pred_feat = model(data['xyz'], data['features'], \
             #                             device = device, \
             #                             quantization_size = config.model.voxel_size)
             # else:
-            # print("data: ", data['xyz_dense'].shape)
+
             data['xyz_dense'] = data['xyz_dense'].to(device)
             data['features_dense'] = data['features_dense'].to(device)
             
             pred_feat = model(data['xyz_dense'], data['features_dense'])
             logits = F.normalize(pred_feat, dim=1) @ F.normalize(clip_text_feat, dim=1).T
             labels = data['category'].to(device)
-            # print("labels: ", labels)
             # print("group: ", data['group'])
             data_xyz.append(data['xyz_dense'])
             logits_all.append(logits.detach())
@@ -128,15 +204,13 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
                 if idx.sum() > 0:
                     per_cat_correct[i] += (logits[idx].argmax(dim=1) == labels[idx]).float().sum()
                     per_cat_count[i] += idx.sum()
-            runs += 1
-            # print("runs complete: ", runs)
 
     topk_acc, correct = calc_accuracy(torch.cat(logits_all), torch.cat(labels_all), topk=(1,3,5,))
 
     overall_acc = per_cat_correct.sum() / per_cat_count.sum()
     per_cat_acc = per_cat_correct / per_cat_count
 
-
+    print("Exporting ObjaverseLVIS results...")
     objaverse_dict = {}
     objaverse_dict["per_cat_acc"] = per_cat_acc.clone().detach().cpu()
     objaverse_dict["xyz"] = torch.cat(data_xyz).clone().detach().cpu()
@@ -144,9 +218,7 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
     objaverse_dict["logits_all"] = torch.cat(logits_all).clone().detach().cpu()
     objaverse_dict["category2idx"] = category2idx
     objaverse_dict["idx2category"] = idx2category
-    if config.export_results:
-        print("Exporting ObjaverseLVIS results...")
-        torch.save(objaverse_dict, "src/eval_data/objaverse_dict.pt")
+    torch.save(objaverse_dict, "src/eval_data/objaverse_dict.pt")
 
     # torch.save(per_cat_acc.clone().detach().cpu(), "src/eval_data/ov_per_cat_acc.pt")
     # torch.save(torch.cat(labels_all).detach().cpu(), "src/eval_data/ov_labels_all.pt")
@@ -167,7 +239,6 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
     #             "test_lvis/top3_acc": topk_acc[1],
     #             "test_lvis/top5_acc": topk_acc[2],})
 
-    return objaverse_dict
 
 def xyz_objaverse_lvis(objaverse_lvis_loader, device):
     

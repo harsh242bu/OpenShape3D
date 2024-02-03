@@ -4,10 +4,12 @@ import numpy as np
 import random
 from utils.data import random_rotate_z, normalize_pc, augment_pc
 from torch.utils.data import Dataset, DataLoader
-import MinkowskiEngine as ME
+# import MinkowskiEngine as ME
 import logging
 import copy
 from torch.utils.data.distributed import DistributedSampler
+
+from finetune_loader import FinetuneLoader
 
 class Four(Dataset):
     def __init__(self, config, phase):
@@ -43,7 +45,8 @@ class Four(Dataset):
 
     def get_objaverse(self, meta):
         uid = meta["id"]
-        data = np.load(meta['data_path'], allow_pickle=True).item()
+        # category = meta["category"]
+        data = np.load(meta['data_path'][1:], allow_pickle=True).item()
         n = data['xyz'].shape[0]
         idx = random.sample(range(n), self.num_points)
         xyz = data['xyz'][idx]
@@ -113,13 +116,16 @@ class Four(Dataset):
             "text_feat": text_feat,
             "dataset": "Objaverse",
             "group": meta["group"],
+            # "category": category,
+            "data_path": meta["data_path"],
             "name":  uid,
             "texts": texts,
             "has_text": text_feat is not None,
         }
     
     def get_others(self, meta):
-        data = np.load(meta['data_path'], allow_pickle=True).item()
+        data = np.load(meta['data_path'][1:], allow_pickle=True).item()
+        # category = meta["category"]
         n = data['xyz'].shape[0]
         idx = random.sample(range(n), self.num_points)
         xyz = data['xyz'][idx]
@@ -186,6 +192,8 @@ class Four(Dataset):
             "text_feat": text_feat,
             "dataset": meta["dataset"],
             "group": meta["group"],
+            # "category": category,
+            "data_path": meta["data_path"],
             "name":  meta["id"],
             "texts": texts,
             "has_text": text_feat is not None,
@@ -225,17 +233,47 @@ def minkowski_collate_fn(list_data):
             merged_list += data
         list_data = merged_list
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        # "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
-        "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
+        "xyz": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
+        "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
         "img_feat": [data["img_feat"] for data in list_data],
         "text_feat": [data["text_feat"] for data in list_data if data["text_feat"] is not None],
         "dataset": [data["dataset"] for data in list_data],
         "group": [data["group"] for data in list_data],
         "name": [data["name"] for data in list_data],
         "texts": [data["texts"] for data in list_data],
+        "data_path": [data["data_path"] for data in list_data],
         "has_text_idx": [i for i, data in enumerate(list_data) if data["text_feat"] is not None],
+    }
+
+def finetune_collate_fn(list_data):
+    if isinstance(list_data[0], list):
+        merged_list = []
+        for data in list_data:
+            merged_list += data
+        list_data = merged_list
+    # feat = list_data[0]["features"]
+    # xyz = list_data[0]["xyz"]
+    # print("feat: ", feat.shape)
+    # print("xyz: ", xyz.shape)
+
+    return {
+        # "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        "features": torch.cat([data["features"] for data in list_data], dim=0),
+        "xyz": torch.stack([data["xyz"] for data in list_data]).float(),
+        "features_dense": torch.stack([data["features"] for data in list_data]),
+        "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
+        "img_feat": [data["img_feat"] for data in list_data],
+        "text_feat": [data["text_feat"] for data in list_data if data["text_feat"] is not None],
+        "dataset": [data["dataset"] for data in list_data],
+        "group": [data["group"] for data in list_data],
+        "name": [data["name"] for data in list_data],
+        "texts": [data["texts"] for data in list_data],
+        "data_path": [data["data_path"] for data in list_data],
+        "has_text_idx": [i for i, data in enumerate(list_data) if data["text_feat"] is not None],
+        "category": torch.tensor([data["category2idx"] for data in list_data], dtype = torch.int32),
     }
 
 def make(config, phase, rank, world_size):
@@ -255,6 +293,26 @@ def make(config, phase, rank, world_size):
             drop_last=True,
             sampler=sampler
         )
+    elif config.dataset.name == "lvis_filter":
+        dataset = FinetuneLoader(config, phase)
+        if phase == "train":
+            batch_size = config.dataset.train_batch_size
+            sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank, drop_last=True)
+        elif phase == "test" or phase == "all":
+            batch_size = config.dataset.test_batch_size
+            sampler = None
+        else:
+            raise NotImplementedError("Phase %s not supported." % phase)
+        data_loader = DataLoader(
+            dataset,
+            num_workers=config.dataset.num_workers,
+            collate_fn=finetune_collate_fn,
+            batch_size=batch_size,
+            pin_memory = True,
+            drop_last=True,
+            sampler=sampler
+        )    
+
     else:
         raise NotImplementedError("Dataset %s not supported." % config.dataset.name)
     return data_loader
@@ -310,9 +368,9 @@ class ModelNet40Test(Dataset):
 
 def minkowski_modelnet40_collate_fn(list_data):
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        # "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
-        "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
+        "xyz": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
         "name": [data["name"] for data in list_data],
         "category": torch.tensor([data["category"] for data in list_data], dtype = torch.int32),
@@ -345,7 +403,7 @@ class ObjaverseLVIS(Dataset):
         logging.info("----clip feature shape: %s" % str(self.clip_cat_feat.shape))
 
     def __getitem__(self, index: int):
-        data = np.load(self.split[index]['data_path'], allow_pickle=True).item()
+        data = np.load(self.split[index]['data_path'][1:], allow_pickle=True).item()
         n = data['xyz'].shape[0]
         idx = random.sample(range(n), self.num_points)
         xyz = data['xyz'][idx]
@@ -376,8 +434,9 @@ class ObjaverseLVIS(Dataset):
     
 def minkowski_objaverse_lvis_collate_fn(list_data):
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        # "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
+        "xyz": torch.stack([data["xyz"] for data in list_data]).float(),
         "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
         "group": [data["group"] for data in list_data],

@@ -30,12 +30,15 @@ training:
   mask_threshold: 0.1
 
 dataset:
-  name: Four
+  name: lvis_filter
   train_split: meta_data/split/train_all.json
   train_partial: -1
   num_points: 10000 
   num_workers: 6
   train_batch_size: 200
+  # test_batch_size: 135
+  # test_batch_size: 66
+  test_batch_size: 120
   use_knn_negative_sample: False
   negative_sample_num: 1
   knn_path: meta_data/point_feat_knn.npy
@@ -64,8 +67,7 @@ objaverse_lvis:
     clip_feat_path: meta_data/lvis_cat_name_pt_feat.npy
     num_points: 10000 
     num_workers: 6
-    # batch_size: 160
-    batch_size: 120
+    batch_size: 160
     y_up: True
     normalize: True
     use_color: True

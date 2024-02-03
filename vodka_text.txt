@@ -1,0 +1,204 @@
+text:  ['Water bottle']
+blip_caption:  just water bottle 3d model
+msft_caption:  a plastic bottle of water
+
+text:  ['Water Bottel']
+blip_caption:  a 3d model of a bottle of water
+msft_caption:  a bottle of water with a blue label
+
+text:  ['Icelandic Bottle - Preview']
+blip_caption:  icelanic - icelanic - icelanic -
+msft_caption:  a plastic bottle with a black cap
+
+text:  ['Courvoisier prova1']
+blip_caption:  a bottle of rum is shown on a gray background
+msft_caption:  a bottle of alcohol
+
+text:  ['Bottle of wine from Poly by Google']
+blip_caption:  a white bottle with a white cap
+msft_caption:  a low poly white bottle
+
+text:  ['Absulut Vodka']
+blip_caption:  absolut vodka bottle 3d model
+msft_caption:  a bottle of vodka with a blue background
+
+text:  ['Scene-hkq-true(1)']
+blip_caption:  absolut vodka bottle 3d model
+msft_caption:  a bottle of vodka
+
+text:  ['Wine bottle from Poly by Google']
+blip_caption:  a green bottle with a white label
+msft_caption:  a green bottle with a white label
+
+text:  ['Low-Poly Glass Bottle']
+blip_caption:  a bottle with a white cap and a green cap
+msft_caption:  a bottle of wine with a white label
+
+text:  ['Vodka bottle']
+blip_caption:  vodka bottle 3d model
+msft_caption:  a bottle of alcohol
+
+text:  ['Bottle of wine from Poly by Google']
+blip_caption:  a white bottle with a cap on it
+msft_caption:  a white bottle with a cap
+
+text:  ['Vinos']
+blip_caption:  a red wine bottle and a glass of wine
+msft_caption:  a close up of a bottle
+
+text:  ['Vodka bottle']
+blip_caption:  a bottle of gin on a black background
+msft_caption:  a bottle of alcohol with a cork
+
+text:  ['Wine Bottle']
+blip_caption:  a white bottle with a yellow cap
+msft_caption:  a white bottle with a blank label
+
+text:  ['Delicious Polish vodka bottle']
+blip_caption:  a bottle of vodka on a black background
+msft_caption:  a glass bottle with a gold cap
+
+text:  ['Bottle Texture']
+blip_caption:  a bottle of wine with a label on it
+msft_caption:  a bottle of liquor with a red seal
+
+text:  ['Garrafa Lowqdraw']
+blip_caption:  a white bottle with a cap on it
+msft_caption:  a white bottle with a cap
+
+text:  ['31004858_2']
+blip_caption:  a clear bottle with a white background
+msft_caption:  a clear glass bottle with a neck
+
+text:  ['Garrafa De Vinho']
+blip_caption:  a white bottle with a cap on it
+msft_caption:  a white bottle with a cap
+
+text:  ['Botella']
+blip_caption:  old bourbon - old bourbon by sasas
+msft_caption:  a clear bottle with a red cap
+
+text:  ['Bottle']
+blip_caption:  a bottle of liquid is shown on a pink background
+msft_caption:  a low poly wine bottle
+
+text:  ['Bottle Of T (2)']
+blip_caption:  a metal bottle with the letter t on it
+msft_caption:  a bottle of alcohol with a black label
+
+text:  ['Ruski Standard vodka']
+blip_caption:  vodka bottle 3d model
+msft_caption:  a bottle of liquid with a black label
+
+text:  ['1st bottle attempt']
+blip_caption:  a purple bottle with a purple cap
+msft_caption:  a purple bottle with a straight neck
+
+text:  ['Garrafa De Vinho']
+blip_caption:  a 3d model of a bottle on a black surface
+msft_caption:  a white bottle on a black background
+
+text:  ['JD Bottle']
+blip_caption:  a bottle of alcohol is shown on a black background
+msft_caption:  a bottle of alcohol
+
+text:  ['Bourbon Bottle']
+blip_caption:  a bottle of vodka with a label on it
+msft_caption:  a bottle of liquor with a black label
+
+text:  ['Rose Liquor Bottle']
+blip_caption:  a bottle of liquid is shown on a gray background
+msft_caption:  a white bottle with a label
+
+text:  ['BottleA']
+blip_caption:  a bottle of rum with a label on it
+msft_caption:  a bottle of rum with a label
+
+text:  ['Lamp']
+blip_caption:  a 3d model of a white bottle
+msft_caption:  a white plastic bottle with a lid
+
+text:  ['Bottle']
+blip_caption:  a 3d model of a bottle with a wooden handle
+msft_caption:  a close-up of a bottle
+
+text:  ['Assessment 1 - Bottle']
+blip_caption:  a white plastic bottle with a handle
+msft_caption:  a white bottle with a cap
+
+text:  ['Wine Bottle']
+blip_caption:  a 3d model of a copper wine bottle
+msft_caption:  a close up of a bottle
+
+text:  ['Bottle']
+blip_caption:  a clear plastic bottle with a white background
+msft_caption:  a clear glass bottle with a neck
+
+text:  ['Bottle - 3D Model']
+blip_caption:  a white bottle with a white cap
+msft_caption:  a white bottle with a cap
+
+text:  ['Thai Perfume น้ำอบนางลอย']
+blip_caption:  a bottle of yellow liquid with a red and white stripe
+msft_caption:  a bottle of liquid with a red cap
+
+text:  ['fake vodka bottle']
+blip_caption:  a bottle of vodka with a red cap
+msft_caption:  a clear bottle with red label
+
+text:  ['Plastic bottle']
+blip_caption:  a bottle with a light in it
+msft_caption:  a clear plastic bottle with a cap
+
+text:  ['Rose Gin Bottle']
+blip_caption:  a pink bottle with a label on it
+msft_caption:  a pink bottle with a cork
+
+text:  ['Wisher Bottle']
+blip_caption:  a bottle of vodka with a label that says wish
+msft_caption:  a bottle of liquor with a blue and purple label
+
+text:  ['Magic Liquid']
+blip_caption:  a blue and white marbled bottle with a wooden handle
+msft_caption:  a glass bottle with a cork and liquid in it
+
+text:  ['Puschkin Vodka']
+blip_caption:  a bottle of vodka is sitting on a table
+msft_caption:  a bottle of vodka on a square mat
+
+text:  ['Bottle Of T']
+blip_caption:  a bottle with the letter t on it
+msft_caption:  a bottle of alcohol with a black label
+
+text:  ['Botella Blanco del valle 5_0']
+blip_caption:  a bottle of tequila next to a man
+msft_caption:  a person standing next to a bottle of alcohol
+
+text:  ['Botella']
+blip_caption:  a 3d model of a bottle with a brown stripe
+msft_caption:  a white bottle with a red stripe
+
+text:  ['Glass Bottle 3D Scan']
+blip_caption:  a bottle with a white cap on a black background
+msft_caption:  a white bottle with a black background
+
+text:  ['SKYY ZODIAC GEMEOS']
+blip_caption:  a blue bottle with gold and black details
+msft_caption:  a blue and gold bottle
+
+text:  ['Wine Bottle/Garafa de Vinho']
+blip_caption:  a white bottle with a cap on it
+msft_caption:  a white bottle with a cap
+
+text:  ['W.I.P Garrafa De Vinho']
+blip_caption:  a 3d model of a bottle on a dark background
+msft_caption:  a black bottle on a black background
+
+text:  ['Beer Bottle']
+blip_caption:  a white bottle with a red cap on it
+msft_caption:  a white bottle with a cap
+
+text:  ['Empty Bottle']
+blip_caption:  a bottle with the word st john on it
+msft_caption:  a white bottle with a black label
+

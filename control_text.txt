@@ -1,0 +1,172 @@
+text:  ['Trippy Thinker']
+blip_caption:  a 3d model of a sexy woman in a purple and blue
+msft_caption:  a statue of a person kneeling on a circular surface
+
+text:  ['PORTAL GUN']
+blip_caption:  a green light on a purple background
+msft_caption:  a grey object with green lights
+
+text:  ['Joy_TE (bozza)']
+blip_caption:  a yellow and black tool with a handle
+msft_caption:  a yellow and black joystick
+
+text:  ['HEAVY DUTY JOY']
+blip_caption:  a 3d model of a remote control
+msft_caption:  a grey joystick with yellow and purple buttons
+
+text:  ['Joystick']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a black and red joystick
+
+text:  ['Arcade Stick']
+blip_caption:  a blue controller with red buttons on it
+msft_caption:  a blue video game controller
+
+text:  ['Palanca']
+blip_caption:  a white ball on top of a white surface
+msft_caption:  a white object with a ball on it
+
+text:  ['joy_3']
+blip_caption:  a 3d model of a remote control with buttons
+msft_caption:  a close-up of a joystick
+
+text:  ['JOY finale']
+blip_caption:  
+msft_caption:  a black and red controller
+
+text:  ['Bomberman Door Control']
+blip_caption:  a 3d model of a gas pump with a lock sign
+msft_caption:  a computer generated image of a machine
+
+text:  ['Staggering Beauty']
+blip_caption:  a black cylinder with a handle on top
+msft_caption:  a black microphone on a white background
+
+text:  ['FightStick']
+blip_caption:  a white controller with a small white button
+msft_caption:  a white video game controller
+
+text:  ['Dualshock']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a video game controller on a white background
+
+text:  ['FMP_Fountain1']
+blip_caption:  a 3d model of a small blue vase
+msft_caption:  a white object with a round object on it
+
+text:  ['Dual Shock 4']
+blip_caption:  a dark room with a blue and purple floor
+msft_caption:  a video game controller on a blue surface
+
+text:  ['Arcade kast']
+blip_caption:  a game machine with the word play on it
+msft_caption:  a video game machine with buttons
+
+text:  ['ATARI']
+blip_caption:  a black and red game controller on a gray background
+msft_caption:  a black joystick with a red button
+
+text:  ['Atari 2600 Joystick']
+blip_caption:  a game controller on a pink background
+msft_caption:  a black square object with a red button
+
+text:  ['Atari 2600 Joystick']
+blip_caption:  a black game controller with a red button
+msft_caption:  a black square gaming controller with a red button
+
+text:  ['Competition Pro Joystick']
+blip_caption:  a red and black joystick with two buttons
+msft_caption:  a black and red joystick
+
+text:  ['Retro Joystick']
+blip_caption:  a pink and blue arcade game controller
+msft_caption:  a video game controller with a ball and a stick
+
+text:  ['Vintage Joystick']
+blip_caption:  a small device with a red button on top
+msft_caption:  a black square object with a red button
+
+text:  ['Joystick Competition']
+blip_caption:  a red button on a black controller
+msft_caption:  a black and red joystick
+
+text:  ['Atari 2600 Joystick']
+blip_caption:  a black and red game controller on a gray background
+msft_caption:  a black gaming controller with a red button
+
+text:  ['ARCADE STICK!']
+blip_caption:  a small arcade game machine with buttons
+msft_caption:  a video game controller with a red ball on it
+
+text:  ['The Arcade - lowpoly, vertexpainted']
+blip_caption:  a red and black game controller with a cord
+msft_caption:  a red and black video game controller
+
+text:  ['Atari Joystick']
+blip_caption:  a small black controller with a red button
+msft_caption:  a black square object with a red button
+
+text:  ['Atari Control']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a video game controller with a pink knob
+
+text:  ['Old Joystick']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a black square object with a red button
+
+text:  ['Game Controller']
+blip_caption:  a 3d model of a controller ring
+msft_caption:  a black device with buttons
+
+text:  ['GAM Controller']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a video game controller with a red handle
+
+text:  ['Joystick']
+blip_caption:  a small game controller with a red button
+msft_caption:  a black square box with a red and blue knob and buttons
+
+text:  ['PS2 CONTROLLER']
+blip_caption:  a 3d model of a game controller
+msft_caption:  a video game controller with buttons
+
+text:  ['Robot Leg 7_gltf']
+blip_caption:  a 3d model of a tank on a pink background
+msft_caption:  a white and grey machine
+
+text:  ['Copy Of Pawn Upscale']
+blip_caption:  a 3d model of a chess piece
+msft_caption:  a white object with a round base
+
+text:  ['Fall Guys Spinning Hammer']
+blip_caption:  a purple spoon with a handle on a gray background
+msft_caption:  a purple and grey object
+
+text:  ['MMU_10077']
+blip_caption:  a 3d printed model of a key
+msft_caption:  a close-up of a metal object
+
+text:  ['Pawn']
+blip_caption:  a white spoon with a handle on top
+msft_caption:  a white round object with a round base
+
+text:  ['Torres Finalassigment']
+blip_caption:  a white chess piece on a gray background
+msft_caption:  a white chess piece with a round base
+
+text:  ['Base-torre']
+blip_caption:  a red and black rocket with a red and black handle
+msft_caption:  a black and red metal object
+
+text:  ['Arcade Joystick']
+blip_caption:  a white controller on a black background
+msft_caption:  a white video game controller
+
+text:  ['basic Atari Joystick']
+blip_caption:  a game controller is shown on a gray background
+msft_caption:  a black square gaming controller with a red button
+
+text:  ['Joystick']
+blip_caption:  a white controller with a black button on it
+msft_caption:  a white joystick with a stick on it
+
