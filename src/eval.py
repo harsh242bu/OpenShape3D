@@ -11,9 +11,11 @@ from objaverse_lvis import make_objaverse_lvis, test_objaverse_lvis, xyz_objaver
 rgb_objaverse_lvis, features_objaverse_lvis
 import data
 
-from utils_func import load_model, load_model_from_path
+from utils_func import load_model, load_model_from_path, load_lora_model_from_path
 
 # def test_dataset(config, model, dataset, device, text_proj=None):
+
+torch.manual_seed(2024)
 
 cli_args, extras = parse_args(sys.argv[1:])
 # config = load_config("src/configs/test.yaml", cli_args = vars(cli_args), extra_args = extras)
@@ -27,7 +29,8 @@ print("Using device: ", device)
 # model.to(device)
 
 if config.resume is not None:
-    model = load_model_from_path(config, config.resume, device)
+    # model = load_model_from_path(config, config.resume, device)
+    model = load_lora_model_from_path(config, config.resume, device)
 else:
     # model_name = "OpenShape/openshape-pointbert-no-lvis"
     # model_name = "OpenShape/openshape-pointbert-shapenet"

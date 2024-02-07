@@ -9,13 +9,14 @@ import torch.distributed.nn
 import torch.nn.functional as F
 from tqdm import tqdm
 from collections import OrderedDict
+from minlora import get_lora_state_dict
 
 from utils_func import hf_hub_download
 
 
 class Trainer(object):
     def __init__(self, rank, config, model, logit_scale, image_proj, text_proj, optimizer, scheduler, train_loader, \
-                  modelnet40_loader, objaverse_lvis_loader=None, scanobjectnn_loader=None):
+                  modelnet40_loader, objaverse_lvis_loader=None, scanobjectnn_loader=None, lora_used=False):
         self.rank = rank
         self.config = config
         self.model = model
@@ -35,8 +36,35 @@ class Trainer(object):
         self.best_modelnet40_overall_acc = 0
         self.best_modelnet40_class_acc = 0
         self.best_lvis_acc = 0
+        self.lora_used = lora_used
         if self.config.text_model == "vico":
             self.vico_feat_dict = np.load(config.vico.dict_path, allow_pickle=True).item()
+
+    def load_from_checkpoint_lora(self, path):
+        checkpoint = torch.load(path)
+        if self.config.training.use_text_proj:
+            self.text_proj.load_state_dict(checkpoint['text_proj'])
+        if self.config.training.use_image_proj:
+            self.image_proj.load_state_dict(checkpoint['image_proj'])
+        self.logit_scale.load_state_dict(checkpoint['logit_scale']) #module.logit_scale = checkpoint['logit_scale']
+        if self.config.training.use_openclip_optimizer_scheduler == False:
+            self.scheduler.load_state_dict(checkpoint['scheduler'])
+        self.epoch = checkpoint['epoch']
+        self.step = checkpoint['step']
+        self.best_img_contras_acc = checkpoint['best_img_contras_acc']
+        self.best_text_contras_acc = checkpoint['best_text_contras_acc']
+        self.best_modelnet40_overall_acc = checkpoint['best_modelnet40_overall_acc']
+        self.best_modelnet40_class_acc = checkpoint['best_modelnet40_class_acc']
+        self.best_lvis_acc = checkpoint['best_lvis_acc']
+
+        logging.info("Loaded checkpoint from {}".format(path))
+        logging.info("----Epoch: {0} Step: {1}".format(self.epoch, self.step))
+        logging.info("----Best img contras acc: {}".format(self.best_img_contras_acc))
+        logging.info("----Best text contras acc: {}".format(self.best_text_contras_acc))
+        logging.info("----Best modelnet40 overall acc: {}".format(self.best_modelnet40_overall_acc))
+        logging.info("----Best modelnet40 class acc: {}".format(self.best_modelnet40_class_acc))
+        logging.info("----Best lvis acc: {}".format(self.best_lvis_acc))
+        
 
     def load_from_checkpoint(self, path):
         checkpoint = torch.load(path)
@@ -211,21 +239,26 @@ class Trainer(object):
                             np.mean(img_contras_acc_list)))
 
     def save_model(self, name):
-        torch.save({
-                    "state_dict": self.model.state_dict(),
-                    "logit_scale": self.logit_scale.state_dict(),#module.logit_scale,
-                    "text_proj": self.text_proj.state_dict() if self.config.training.use_text_proj else None,
-                    "image_proj": self.image_proj.state_dict() if self.config.training.use_image_proj else None,
-                    "optimizer": self.optimizer.state_dict(),
-                    "scheduler": self.scheduler.state_dict() if self.config.training.use_openclip_optimizer_scheduler == False else None,
-                    "epoch": self.epoch,
-                    "step": self.step,
-                    "best_img_contras_acc": self.best_img_contras_acc,
-                    "best_text_contras_acc": self.best_text_contras_acc,
-                    "best_modelnet40_overall_acc": self.best_modelnet40_overall_acc,
-                    "best_modelnet40_class_acc": self.best_modelnet40_class_acc,
-                    "best_lvis_acc": self.best_lvis_acc,
-                }, os.path.join(self.config.ckpt_dir, '{}.pt'.format(name)))
+        torch_dict = {
+            "state_dict": self.model.state_dict(),
+            "logit_scale": self.logit_scale.state_dict(),#module.logit_scale,
+            "text_proj": self.text_proj.state_dict() if self.config.training.use_text_proj else None,
+            "image_proj": self.image_proj.state_dict() if self.config.training.use_image_proj else None,
+            "optimizer": self.optimizer.state_dict(),
+            "scheduler": self.scheduler.state_dict() if self.config.training.use_openclip_optimizer_scheduler == False else None,
+            "epoch": self.epoch,
+            "step": self.step,
+            "best_img_contras_acc": self.best_img_contras_acc,
+            "best_text_contras_acc": self.best_text_contras_acc,
+            "best_modelnet40_overall_acc": self.best_modelnet40_overall_acc,
+            "best_modelnet40_class_acc": self.best_modelnet40_class_acc,
+            "best_lvis_acc": self.best_lvis_acc,
+        }
+        if self.lora_used:
+            lora_state_dict = get_lora_state_dict(self.model)
+            torch_dict["lora_state_dict"] = lora_state_dict
+
+        torch.save(torch_dict, os.path.join(self.config.ckpt_dir, '{}.pt'.format(name)))
 
     def accuracy(self, output, target, topk=(1,)):
         """Computes the accuracy over the k top predictions for the specified values of k"""

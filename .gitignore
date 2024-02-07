@@ -9,7 +9,7 @@ src/eval_data
 # src/eval_data/ov_features.pt
 exp
 wandb
-
+.vscode
 
 
 # Python gitignor template

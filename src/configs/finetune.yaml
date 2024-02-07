@@ -37,7 +37,7 @@ dataset:
   train_partial: -1
   num_points: 10000 
   num_workers: 6
-  train_batch_size: 190
+  train_batch_size: 150
   test_batch_size: 80
   use_knn_negative_sample: False
   negative_sample_num: 1
