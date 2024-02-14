@@ -70,8 +70,8 @@ def parse_args(args):
     )
     parser.add_argument(
         "--wandb_key",
-        default="3051f76ad3503c10871179fb154be79d5e561ccc",
-        # default=None,
+        # default="3051f76ad3503c10871179fb154be79d5e561ccc",
+        default=None,
         type=str,
         help="wandb login key"
     )
