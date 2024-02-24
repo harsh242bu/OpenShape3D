@@ -9,7 +9,7 @@ import torch.distributed.nn
 import torch.nn.functional as F
 from tqdm import tqdm
 from collections import OrderedDict
-from minlora import get_lora_state_dict
+# from minlora import get_lora_state_dict
 
 from utils_func import hf_hub_download
 
@@ -254,9 +254,9 @@ class Trainer(object):
             "best_modelnet40_class_acc": self.best_modelnet40_class_acc,
             "best_lvis_acc": self.best_lvis_acc,
         }
-        if self.lora_used:
-            lora_state_dict = get_lora_state_dict(self.model)
-            torch_dict["lora_state_dict"] = lora_state_dict
+        # if self.lora_used:
+        #     lora_state_dict = get_lora_state_dict(self.model)
+        #     torch_dict["lora_state_dict"] = lora_state_dict
 
         torch.save(torch_dict, os.path.join(self.config.ckpt_dir, '{}.pt'.format(name)))
 
@@ -277,6 +277,7 @@ class Trainer(object):
             return res, correct
 
     def train(self):
+        best_lvis_acc = 0
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
             if self.rank == 0:
@@ -292,10 +293,14 @@ class Trainer(object):
             )
             print(f"Time taken for epoch {epoch}: {formatted_time}")
             
-            if self.rank == 0:
-                self.save_model('latest')
-                # self.test_modelnet40()
-                # self.test_objaverse_lvis()
+            # if self.rank == 0:
+            #     # self.save_model('latest')
+            #     # self.test_modelnet40()
+            #     overall_acc = self.test_objaverse_lvis()
+            #     if overall_acc > best_lvis_acc:
+            #         best_lvis_acc = overall_acc
+            #         self.save_model('best_lvis')
+            #         logging.info("Best LVIS acc: {}".format(best_lvis_acc))
             if self.rank == 0 and self.epoch % self.config.training.save_freq == 0:
                 self.save_model('epoch_{}'.format(self.epoch))
 
@@ -405,6 +410,8 @@ class Trainer(object):
                     "test_lvis/class_acc": per_cat_acc.mean(),
                     "test_lvis/top3_acc": topk_acc[1],
                     "test_lvis/top5_acc": topk_acc[2],})
+        
+        return overall_acc
    
     def test_scanobjectnn(self):
         self.model.eval()

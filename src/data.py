@@ -261,7 +261,7 @@ def finetune_collate_fn(list_data):
 
     return {
         # "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
-        "features": torch.cat([data["features"] for data in list_data], dim=0),
+        "features": torch.stack([data["features"] for data in list_data]),
         "xyz": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
         "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
@@ -276,7 +276,7 @@ def finetune_collate_fn(list_data):
         "category": torch.tensor([data["category2idx"] for data in list_data], dtype = torch.int32),
     }
 
-def make(config, phase, rank, world_size):
+def make(config, phase, rank, world_size, exp_pair):
     if config.dataset.name == "Four":
         dataset = Four(config, phase,)
         if phase == "train":
@@ -294,7 +294,7 @@ def make(config, phase, rank, world_size):
             sampler=sampler
         )
     elif config.dataset.name == "lvis_filter":
-        dataset = FinetuneLoader(config, phase)
+        dataset = FinetuneLoader(config, phase, exp_pair)
         if phase == "train":
             batch_size = config.dataset.train_batch_size
             sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank, drop_last=True)

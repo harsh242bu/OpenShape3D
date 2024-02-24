@@ -64,8 +64,8 @@ objaverse_lvis:
     clip_feat_path: meta_data/lvis_cat_name_pt_feat.npy
     num_points: 10000 
     num_workers: 6
-    # batch_size: 160
-    batch_size: 120
+    batch_size: 170
+    # batch_size: 120
     y_up: True
     normalize: True
     use_color: True

@@ -60,7 +60,7 @@ def main(rank, world_size, cli_args, extras):
             shutil.rmtree(config.code_dir)
         shutil.copytree("./src", config.code_dir)
     
-    config.device = 'cuda:{0}'.format(rank) 
+    config.device = 'cuda:{0}'.format(rank)
     
     if rank == 0:
         config.log_path = config.get('log_path') or os.path.join(config.exp_dir, config.trial_name, 'log.txt')
@@ -97,7 +97,7 @@ def main(rank, world_size, cli_args, extras):
         image_proj = DDP(image_proj, device_ids=[rank], output_device=rank, find_unused_parameters=False)
         text_proj = DDP(text_proj, device_ids=[rank], output_device=rank, find_unused_parameters=False)
 
-        train_loader = data.make(config, 'train', rank, world_size)
+        train_loader = data.make(config, 'train', rank, world_size, "antenna_windmill", True)
         print("train_loader size: ", len(train_loader))
         print("train_loader dataset size: ", len(train_loader.dataset))
 

@@ -39,7 +39,7 @@ dataset:
   num_workers: 6
   # train_batch_size: 150
   train_batch_size: 108
-  test_batch_size: 40
+  test_batch_size: 80
   use_knn_negative_sample: False
   negative_sample_num: 1
   knn_path: meta_data/point_feat_knn.npy
@@ -54,15 +54,6 @@ dataset:
   use_prompt_engineering: True
   gpt4_filtering_path: meta_data/gpt4_filtering.json
 
-modelnet40:
-  test_split: meta_data/modelnet40/test_split.json
-  test_pc: meta_data/modelnet40/test_pc.npy
-  num_points: 10000 
-  num_workers: 0
-  test_batch_size: 50
-  clip_feat_path: meta_data/modelnet40/cat_name_pt_feat.npy
-  y_up: True
-
 objaverse_lvis:
   split: meta_data/split/lvis.json
   clip_feat_path: meta_data/lvis_cat_name_pt_feat.npy
@@ -73,12 +64,3 @@ objaverse_lvis:
   y_up: True
   normalize: True
   use_color: True
-
-scanobjectnn:
-  data_path: meta_data/scanobjectnn/xyz_label.npy 
-  num_points: 10000 
-  num_workers: 0
-  test_batch_size: 50
-  clip_feat_path: meta_data/scanobjectnn/cat_name_pt_feat.npy
-  y_up: True
-  

@@ -1,3 +1,4 @@
+import os
 import json
 import torch
 import random
@@ -7,11 +8,23 @@ from torch.utils.data import DataLoader, Dataset
 from utils.data import normalize_pc
 
 
-train_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_train.json"
-test_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_test.json"
+# train_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_train.json"
+# test_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_test.json"
+
+# exp_pair = "antenna_windmill"
+# finetune_dir = os.path.join("/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune", exp_pair)
+
+# train_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_train.json")
+# test_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_test.json")
 
 class FinetuneLoader(Dataset):
-    def __init__(self, config, split="train"):
+    def __init__(self, config, split="train", exp_pair="antenna_windmill"):
+
+        finetune_dir = os.path.join("/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune", exp_pair)
+
+        train_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_train.json")
+        test_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_test.json")
+
         self.y_up = config.dataset.y_up
         self.normalize = config.dataset.normalize
         self.use_color = config.dataset.use_color

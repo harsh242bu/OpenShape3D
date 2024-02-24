@@ -103,7 +103,7 @@ text_proj = torch.nn.Linear(config.model.out_channel, config.model.out_channel).
 # objaverse_lvis_loader = make_objaverse_lvis(config)
 
 phase = "all"
-finetune_test_loader = data.make(config, phase, None, None)
+finetune_test_loader = data.make(config, phase, None, None, None)
 
 # print("objaverse_lvis total batches: ", len(objaverse_lvis_loader))
 # print("objaverse_lvis dataset size: ", len(objaverse_lvis_loader.dataset))

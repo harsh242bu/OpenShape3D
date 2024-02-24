@@ -2,7 +2,7 @@ import torch
 import re
 from collections import OrderedDict
 from huggingface_hub import hf_hub_download
-from minlora import add_lora
+# from minlora import add_lora
 
 import models
 
@@ -41,6 +41,7 @@ def load_model_from_path(config, model_path, device):
     model = models.make(config)
     # model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     checkpoint = torch.load(model_path)
+    print("epoch: ", checkpoint['epoch'])
 
     model_dict = OrderedDict()
     pattern = re.compile('module.')
@@ -54,24 +55,24 @@ def load_model_from_path(config, model_path, device):
 
     return model
 
-def load_lora_model_from_path(config, model_path, device):
-    print("Loading model from path: ", model_path)
-    model = models.make(config)
-    add_lora(model)
-    # model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    checkpoint = torch.load(model_path)
+# def load_lora_model_from_path(config, model_path, device):
+#     print("Loading model from path: ", model_path)
+#     model = models.make(config)
+#     add_lora(model)
+#     # model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+#     checkpoint = torch.load(model_path)
 
-    # model_dict = OrderedDict()
-    # pattern = re.compile('module.')
-    # for k,v in checkpoint['state_dict'].items():
-    #     if re.search("module", k):
-    #         model_dict[re.sub(pattern, '', k)] = v
+#     # model_dict = OrderedDict()
+#     # pattern = re.compile('module.')
+#     # for k,v in checkpoint['state_dict'].items():
+#     #     if re.search("module", k):
+#     #         model_dict[re.sub(pattern, '', k)] = v
 
-    # model.load_state_dict(model_dict)
-    model.load_state_dict(checkpoint['state_dict'])
-    model.to(device)
+#     # model.load_state_dict(model_dict)
+#     model.load_state_dict(checkpoint['state_dict'])
+#     model.to(device)
 
-    return model
+#     return model
 
 def calc_accuracy(output, target, topk=(1,)):
         """Computes the accuracy over the k top predictions for the specified values of k"""

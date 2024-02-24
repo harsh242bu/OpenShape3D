@@ -11,7 +11,8 @@ from objaverse_lvis import make_objaverse_lvis, test_objaverse_lvis, xyz_objaver
 rgb_objaverse_lvis, features_objaverse_lvis
 import data
 
-from utils_func import load_model, load_model_from_path, load_lora_model_from_path
+from utils_func import load_model, load_model_from_path 
+# from utils_func import load_lora_model_from_path
 
 # def test_dataset(config, model, dataset, device, text_proj=None):
 
@@ -29,8 +30,8 @@ print("Using device: ", device)
 # model.to(device)
 
 if config.resume is not None:
-    # model = load_model_from_path(config, config.resume, device)
-    model = load_lora_model_from_path(config, config.resume, device)
+    model = load_model_from_path(config, config.resume, device)
+    # model = load_lora_model_from_path(config, config.resume, device)
 else:
     # model_name = "OpenShape/openshape-pointbert-no-lvis"
     # model_name = "OpenShape/openshape-pointbert-shapenet"
@@ -87,7 +88,7 @@ print("objaverse_lvis dataset size: ", len(objaverse_lvis_loader.dataset))
 objaverse_dict = test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
 # objaverse_dict = test_objaverse_lvis(model, config, finetune_test_loader, text_proj, device)
 
-if not os.path.exists(config.export_result_dir):
+if config.export_result_dir and not os.path.exists(config.export_result_dir):
     os.makedirs(config.export_result_dir)
 
 if config.export_result_dir is not None:

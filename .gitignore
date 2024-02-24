@@ -10,7 +10,7 @@ src/eval_data
 exp
 wandb
 .vscode
-
+finetune
 
 # Python gitignor template
 # Byte-compiled / optimized / DLL files
