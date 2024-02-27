@@ -19,11 +19,13 @@ from models.LogitScaleNetwork import LogitScaleNetwork
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.multiprocessing as mp
+import torch.nn.functional as F
 
-from utils_func import load_model
+from utils_func import load_model, get_train_test_size
 from finetune_loader import FinetuneLoader
 
 target_cat_pair = "desk_monitor"
+cat_list = ["desk", "monitor_(computer_equipment) computer_monitor"]
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -42,11 +44,13 @@ def cleanup():
     dist.destroy_process_group()
 
 class BinaryClassifier(torch.nn.Module):
-    def __init__(self, base_model, middle_layer=256):
+    def __init__(self, base_model, clip_cat_feat, device, middle_layer=256):
         super(BinaryClassifier, self).__init__()
         self.base_model = base_model
         self.fc1 = torch.nn.Linear(1156, middle_layer)
         self.fc2 = torch.nn.Linear(middle_layer, 1)
+
+        self.clip_text_feat = torch.from_numpy(clip_cat_feat).to(device)
 
         # Freeze the layers
         for param in self.base_model.parameters():
@@ -58,7 +62,11 @@ class BinaryClassifier(torch.nn.Module):
         # print("xyz: ", xyz.shape)
         # print("features: ", features.shape)
         x = self.base_model(xyz, features)
-        x = self.fc1(x)
+        pred_feat = F.normalize(x, dim=1) @ F.normalize(self.clip_text_feat, dim=1).T
+        # print("base_model output: ", pred_feat.shape)
+        # print("pred_feat: ", pred_feat)
+
+        x = self.fc1(pred_feat)
         x = self.fc2(x)
 
         return x
@@ -68,7 +76,8 @@ def main(rank, world_size, cli_args, extras):
     config = load_config(cli_args.config, cli_args = vars(cli_args), extra_args = extras)
 
     setup_cache(config)
-    logging.info("config: {}".format(config))
+    if rank == 0:
+        logging.info("config: {}".format(str(config)))
 
     config.trial_name = config.get('trial_name') + datetime.now().strftime('@%Y%m%d-%H%M%S')
     config.ckpt_dir = config.get('ckpt_dir') or os.path.join(config.exp_dir, config.trial_name, 'ckpt')
@@ -81,8 +90,8 @@ def main(rank, world_size, cli_args, extras):
             shutil.rmtree(config.code_dir)
         shutil.copytree("./src", config.code_dir)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("Using device: ", device)
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # print("Using device: ", device)
 
     config.device = 'cuda:{0}'.format(rank)
 
@@ -96,9 +105,22 @@ def main(rank, world_size, cli_args, extras):
             wandb.login(key=config.wandb_key)
             wandb.init(project=config.project_name, name=config.trial_name, config=OmegaConf.to_object(config))
     
+    if config.default_batch_size:
+        train_batch, test_batch = get_train_test_size(config, target_cat_pair)
+        config.dataset.train_batch_size = train_batch
+        config.dataset.test_batch_size = test_batch
+
+    train_loader = data.make(config, 'train', rank, world_size, target_cat_pair)
+
+    if rank == 0:
+        test_loader = data.make(config, 'test', rank, world_size, target_cat_pair)
+    else:
+        test_loader = None
+    
+
     model_name = "OpenShape/openshape-pointbert-vitg14-rgb"
     base_model = load_model(config, model_name)
-    model = BinaryClassifier(base_model).to(config.device)
+    model = BinaryClassifier(base_model, train_loader.dataset.clip_cat_feat, config.device).to(config.device)
 
     if rank == 0:
         total_params = sum(p.numel() for p in model.parameters())
@@ -111,26 +133,23 @@ def main(rank, world_size, cli_args, extras):
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     logging.info("Using SyncBatchNorm")
 
-    train_loader = data.make(config, 'train', rank, world_size, target_cat_pair)
+    # print("train_loader size: ", len(train_loader))
+    # print("train_loader dataset size: ", len(train_loader.dataset))
+    logging.info("Train loader size: {}".format(len(train_loader)))
+    logging.info("Train loader dataset size: {}".format(len(train_loader.dataset)))
 
-    if rank == 0:
-        test_loader = data.make(config, 'test', rank, world_size, target_cat_pair)
-    else:
-        test_loader = None
-
-    print("train_loader size: ", len(train_loader))
-    print("train_loader dataset size: ", len(train_loader.dataset))
-
-    print("test_loader size: ", len(test_loader))
-    print("test_loader dataset size: ", len(test_loader.dataset))
+    # print("test_loader size: ", len(test_loader))
+    # print("test_loader dataset size: ", len(test_loader.dataset))
+    logging.info("Test loader size: {}".format(len(test_loader)))
+    logging.info("Test loader dataset size: {}".format(len(test_loader.dataset)))
 
     if rank == 0 and train_loader is not None:
         logging.info("Train iterations: {}".format(len(train_loader)))
 
-    params = list(model.fc1.parameters()) + list(model.fc2.parameters())
+    params = list(model.module.fc1.parameters()) + list(model.module.fc2.parameters())
     # params = list(model.parameters())
     logging.info("Trainable parameters: {}".format(len(params)))
-    print("Parameters: ", params)
+    # print("Parameters: ", params)
 
     if config.training.use_openclip_optimizer_scheduler:
         optimizer = torch.optim.AdamW(
@@ -146,7 +165,7 @@ def main(rank, world_size, cli_args, extras):
     
     criterion = nn.BCEWithLogitsLoss()
 
-    trainer = Trainer(config, model, optimizer, None, criterion, train_loader, test_loader)
+    trainer = Trainer(rank, config, model, optimizer, None, criterion, train_loader, test_loader, cat_list)
     trainer.train()
 
     if rank == 0 and config.wandb_key is not None:

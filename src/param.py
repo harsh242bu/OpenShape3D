@@ -35,13 +35,11 @@ def parse_args(args):
     )
     parser.add_argument(
         "--train",
-        default=True,
         action="store_true",
         help="train a model."
     )
     parser.add_argument(
         "--load_from_online",
-        default=False,
         action="store_true",
         help="load model from huggingface"
     )
@@ -52,7 +50,6 @@ def parse_args(args):
     )
     parser.add_argument(
         "--autoresume",
-        default=False,
         action="store_true",
         help="auto back-off on failure"
     )
@@ -83,7 +80,6 @@ def parse_args(args):
     )
     parser.add_argument(
         "--export_results",
-        default=False,
         action="store_true",
         help="export results to .pt file"
     )
@@ -93,17 +89,10 @@ def parse_args(args):
         type=str,
         help="directory to export results"
     )
-    # parser.add_argument(
-    #     "--save_every",
-    #     default=50,
-    #     type=int,
-    #     help="save checkpoint every N epochs"
-    # )
-    # parser.add_argument(
-    #     "--normalize",
-    #     default="l2-norm",
-    #     type=str,
-    #     help="normalize vico features"
-    # )
+    parser.add_argument(
+        "--default_batch_size",
+        action="store_true",
+        help="use default batch size as whole dataset"
+    )
     args, extras = parser.parse_known_args()
     return args, extras

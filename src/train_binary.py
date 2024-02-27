@@ -15,20 +15,34 @@ from collections import OrderedDict
 import sklearn.metrics as metrics
 from utils_func import hf_hub_download
 
+def get_new_labels(labels, cat_list):
+    label_new = torch.zeros_like(labels)
+    for idx, cat in enumerate(cat_list):
+        label_new[labels == cat] = idx
+    label_new = label_new.float()
+    
+    return label_new
 
 class Trainer(object):
-    def __init__(self, config, model, optimizer, scheduler, criterion, train_loader, test_loader=None):
+    def __init__(self, rank, config, model, optimizer, scheduler, criterion, train_loader, test_loader, cat_list):
         
+        self.rank = rank
         self.config = config
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.criterion = criterion
+
+        category2idx = train_loader.dataset.category2idx
+        self.cat_list = [category2idx[cat] for cat in cat_list]
+        
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.epoch = 0
         self.step = 0
         self.best_acc = 0
+
+        
         if self.config.text_model == "vico":
             self.vico_feat_dict = np.load(config.vico.dict_path, allow_pickle=True).item()
 
@@ -57,7 +71,6 @@ class Trainer(object):
     def train_one_epoch(self):
         self.model.train()
 
-        # for data in tqdm(self.train_loader):
         for data in self.train_loader:
             # print("xyz: ", data['xyz'].shape)
             # print("features: ", data['features'].shape)
@@ -69,18 +82,23 @@ class Trainer(object):
 
             logits = self.model(data['xyz'], data['features'])
             logits = logits.squeeze()
-            print("logits: ", logits.shape)
+            # print("logits: ", logits.shape)
             labels = data['category'].to(self.config.device)
-            print("label: ", labels)
+            # print("labels: ", labels)
 
-            loss = self.criterion(logits, labels)
+            label_new = get_new_labels(labels, self.cat_list)
+            # print("label: ", label_new)
+
+            loss = self.criterion(logits, label_new)
             loss.backward()
 
             self.optimizer.step()
             if self.scheduler:
                 self.scheduler.step()
 
-            if self.step % self.config.training.log_freq == 0:
+            if self.rank == 0 and self.step % self.config.training.log_freq == 0:
+                logging.info("Epoch: {} Step: {} Loss: {}".format(self.epoch, self.step, loss.item()))
+
                 if self.config.wandb_key is not None:
                     wandb.log({
                         "train/loss": loss.item(),
@@ -88,10 +106,6 @@ class Trainer(object):
                         "train/epoch": self.epoch,
                         "train/step": self.step
                     })
-    
-        # logging.info('Train: text_cotras_acc: {0} image_contras_acc: {1}'\
-        #         .format(np.mean(text_contras_acc_list) if len(text_contras_acc_list) > 0 else 0,
-        #                 np.mean(img_contras_acc_list)))
 
     def save_model(self, name):
         torch_dict = {
@@ -124,7 +138,8 @@ class Trainer(object):
         # best_acc = 0
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
-            logging.info("Epoch: {}".format(self.epoch))
+            if self.rank == 0:
+                logging.info("Epoch: {}".format(self.epoch))
 
             start_time = time.time()
             self.train_one_epoch()
@@ -143,7 +158,7 @@ class Trainer(object):
                 self.save_model('best')
                 logging.info("Best acc: {}".format(self.best_acc))
 
-            if self.epoch % self.config.training.save_freq == 0:
+            if self.rank == 0 and self.epoch % self.config.training.save_freq == 0:
                 self.save_model('epoch_{}'.format(self.epoch))
 
     def test(self):
@@ -153,23 +168,29 @@ class Trainer(object):
         labels_all = []
         preds_all = []
         with torch.no_grad():
-            for data in tqdm(self.test_loader):
+            for data in self.test_loader:
                 
                 # logits = self.model(data['xyz'], data['features']) data['xyz_dense'], data['features_dense']
                 logits = self.model(data['xyz_dense'], data['features_dense'])
                 labels = data['category'].to(self.config.device)
                 logits_all.append(logits.detach())
-                labels_all.append(labels)
+                # labels_all.append(labels)
+
+                labels_new = get_new_labels(labels, self.cat_list)
                 
                 sigmoid = nn.Sigmoid()
                 logits = sigmoid(logits)
                 preds = logits > 0.5
                 
-                labels_all.append(labels.cpu().numpy())
+                labels_all.append(labels_new.cpu().numpy())
+                # print("preds: ", preds.shape)
+                # print("preds: ", preds.reshape(-1).shape)
                 preds_all.append(preds.detach().cpu().numpy())
         
         labels_all = np.concatenate(labels_all)
-        preds_all = np.concatenate(preds_all)
+        # print("labels_all: ", labels_all)
+        preds_all = np.concatenate(preds_all).reshape(-1)
+        # print("preds_all: ", preds_all)
 
         overall_acc = metrics.accuracy_score(labels_all, preds_all)
 

@@ -276,7 +276,7 @@ def finetune_collate_fn(list_data):
         "category": torch.tensor([data["category2idx"] for data in list_data], dtype = torch.int32),
     }
 
-def make(config, phase, rank, world_size, exp_pair):
+def make(config, phase, rank, world_size, *args):
     if config.dataset.name == "Four":
         dataset = Four(config, phase,)
         if phase == "train":
@@ -294,6 +294,8 @@ def make(config, phase, rank, world_size, exp_pair):
             sampler=sampler
         )
     elif config.dataset.name == "lvis_filter":
+        exp_pair = args[0]
+        
         dataset = FinetuneLoader(config, phase, exp_pair)
         if phase == "train":
             batch_size = config.dataset.train_batch_size

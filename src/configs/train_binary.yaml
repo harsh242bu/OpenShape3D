@@ -12,16 +12,16 @@ model:
 
 training:
   use_openclip_optimizer_scheduler: False
-  lr: 0.001
+  lr: 0.006
   lr_decay_step: 10000
   lr_decay_rate: 0.95
   beta1: 0.9
   beta2: 0.999
   eps: 1.0e-8
   warmup: 10000
-  max_epoch: 54
-  log_freq: 10
-  save_freq: 1
+  max_epoch: 20
+  log_freq: 1
+  save_freq: 4
   lambda_img_contras: 1
   lambda_text_contras: 1
   use_image_proj: False 
@@ -38,8 +38,8 @@ dataset:
   num_points: 10000 
   num_workers: 6
   # train_batch_size: 150
-  train_batch_size: 108
-  test_batch_size: 80
+  train_batch_size: 182
+  test_batch_size: 47
   use_knn_negative_sample: False
   negative_sample_num: 1
   knn_path: meta_data/point_feat_knn.npy
