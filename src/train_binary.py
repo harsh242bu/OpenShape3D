@@ -136,6 +136,8 @@ class Trainer(object):
 
     def train(self):
         # best_acc = 0
+        overall_acc = self.test()
+        
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
             if self.rank == 0:

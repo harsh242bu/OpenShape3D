@@ -294,17 +294,22 @@ def make(config, phase, rank, world_size, *args):
             sampler=sampler
         )
     elif config.dataset.name == "lvis_filter":
-        exp_pair = args[0]
-        
-        dataset = FinetuneLoader(config, phase, exp_pair)
+        cat_list = args[0]
+        dataset = FinetuneLoader(config, cat_list, phase)
+
         if phase == "train":
-            batch_size = config.dataset.train_batch_size
+
+            # batch_size = config.dataset.train_batch_size
+            batch_size = min(config.dataset.train_batch_size, dataset.__len__())
             sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank, drop_last=True)
         elif phase == "test" or phase == "all":
-            batch_size = config.dataset.test_batch_size
+            # batch_size = config.dataset.test_batch_size
+            batch_size = min(config.dataset.test_batch_size, dataset.__len__())
             sampler = None
         else:
             raise NotImplementedError("Phase %s not supported." % phase)
+        
+        logging.info(f"Phase: {phase}, batch_size: {batch_size}")
         data_loader = DataLoader(
             dataset,
             num_workers=config.dataset.num_workers,
@@ -313,7 +318,7 @@ def make(config, phase, rank, world_size, *args):
             pin_memory = True,
             drop_last=True,
             sampler=sampler
-        )    
+        )
 
     else:
         raise NotImplementedError("Dataset %s not supported." % config.dataset.name)

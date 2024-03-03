@@ -19,9 +19,9 @@ training:
   beta2: 0.999
   eps: 1.0e-8
   warmup: 10000
-  max_epoch: 20
+  max_epoch: 50
   log_freq: 1
-  save_freq: 4
+  save_freq: 24
   lambda_img_contras: 1
   lambda_text_contras: 1
   use_image_proj: False 

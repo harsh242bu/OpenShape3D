@@ -4,48 +4,26 @@ import torch
 import random
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
-import logging
 
 from utils.data import normalize_pc
 
-rando_seed = 2020
+
+# train_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_train.json"
+# test_lvis_filtered = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune/lvis_filter_test.json"
+
+# exp_pair = "antenna_windmill"
+# finetune_dir = os.path.join("/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune", exp_pair)
+
+# train_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_train.json")
+# test_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_test.json")
 
 class FinetuneLoader(Dataset):
-    def __init__(self, config, cat_list, split="train", train_split=0.8):
-        random.seed(rando_seed)
+    def __init__(self, config, split="train", exp_pair="antenna_windmill"):
 
-        objaverse_dict = torch.load("./src/eval_data/objaverse_dict.pt")
-        ov_category2idx = objaverse_dict["category2idx"]
-        ov_idx2category = objaverse_dict["idx2category"]
-        objaverse_dict = None
+        finetune_dir = os.path.join("/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/finetune", exp_pair)
 
-        lvis_test_file = "/projectnb/ivc-ml/harshk/3d_perception/OpenShape3D/meta_data/split/lvis.json"
-        lvis_test = json.load(open(lvis_test_file, "r"))
-
-        cat_idx_list = [ov_category2idx[cat] for cat in cat_list]
-
-        filter_data = {}
-        for i in cat_idx_list:
-            filter_data[i] = []
-
-        for obj in lvis_test:
-            cat_id = ov_category2idx[obj["category"]]
-            if cat_id in cat_idx_list:
-                filter_data[cat_id].append(obj)
-
-        train_data = []
-        test_data = []
-
-        
-        for key, val in filter_data.items():
-            logging.info(f"Category: {ov_idx2category[key]}, Size: {len(val)}")
-            shuffle_val = val.copy()
-            
-            data_size = len(val)
-            random.shuffle(shuffle_val)
-            train_size = int(train_split * data_size)
-            train_data.extend(shuffle_val[:train_size])
-            test_data.extend(shuffle_val[train_size:])
+        train_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_train.json")
+        test_lvis_filtered = os.path.join(finetune_dir, "lvis_filter_test.json")
 
         self.y_up = config.dataset.y_up
         self.normalize = config.dataset.normalize
@@ -65,21 +43,27 @@ class FinetuneLoader(Dataset):
             self.gpt4_filtering = json.load(open(config.dataset.gpt4_filtering_path, "r"))
 
         if split == "train":
-            self.data = np.array(train_data)
+            train_file = json.load(open(train_lvis_filtered, "r"))
+            data = []
+            for k, v in train_file.items():
+                data.extend(v)
+            self.data = data
 
         elif split == "test":
-            self.data = np.array(test_data)
-
+            test_file = json.load(open(test_lvis_filtered, "r"))
+            data = []
+            for k, v in test_file.items():
+                data.extend(v)
+            self.data = data
         elif split == "all":
-            # train_file = json.load(open(train_lvis_filtered, "r"))
-            # test_file = json.load(open(test_lvis_filtered, "r"))
-            # data = []
-            # for k, v in train_file.items():
-            #     data.extend(v)
-            # for k, v in test_file.items():
-            #     data.extend(v)
-            self.data = np.array(train_data + test_data)
-            assert len(self.data) == len(train_data) + len(test_data)
+            train_file = json.load(open(train_lvis_filtered, "r"))
+            test_file = json.load(open(test_lvis_filtered, "r"))
+            data = []
+            for k, v in train_file.items():
+                data.extend(v)
+            for k, v in test_file.items():
+                data.extend(v)
+            self.data = data
         else:
             raise NotImplementedError
 

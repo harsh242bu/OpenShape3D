@@ -22,10 +22,9 @@ import torch.multiprocessing as mp
 import torch.nn.functional as F
 
 from utils_func import load_model, get_train_test_size
-from finetune_loader import FinetuneLoader
 
-target_cat_pair = "desk_monitor"
-cat_list = ["desk", "monitor_(computer_equipment) computer_monitor"]
+
+cat_list = ["armor", "helmet"]
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -104,16 +103,11 @@ def main(rank, world_size, cli_args, extras):
         if config.wandb_key is not None:
             wandb.login(key=config.wandb_key)
             wandb.init(project=config.project_name, name=config.trial_name, config=OmegaConf.to_object(config))
-    
-    if config.default_batch_size:
-        train_batch, test_batch = get_train_test_size(config, target_cat_pair)
-        config.dataset.train_batch_size = train_batch
-        config.dataset.test_batch_size = test_batch
 
-    train_loader = data.make(config, 'train', rank, world_size, target_cat_pair)
+    train_loader = data.make(config, 'train', rank, world_size, cat_list)
 
     if rank == 0:
-        test_loader = data.make(config, 'test', rank, world_size, target_cat_pair)
+        test_loader = data.make(config, 'test', rank, world_size, cat_list)
     else:
         test_loader = None
     
