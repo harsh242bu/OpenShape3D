@@ -133,8 +133,6 @@ class Trainer(object):
         logging.info("----Best lvis acc: {}".format(self.best_lvis_acc))
 
     def contras_loss(self, feat1, feat2, logit_scale=1, mask = None):
-        # feat1 batch_size x 1280   feat2 batch_size x 1280  
-        print("feat1: ", feat1.shape)
         if self.config.ngpu > 1:
             feat1 = F.normalize(feat1, dim=1)
             feat2 = F.normalize(feat2, dim=1)
@@ -145,9 +143,31 @@ class Trainer(object):
             logits = logit_scale * F.normalize(feat1, dim=1) @ F.normalize(feat2, dim=1).T
         if mask is not None:
             logits = logits * mask
-        print("logits: ", logits.shape) # batch_size x batch_size
+        print("logits: ", logits.shape)
         labels = torch.arange(logits.shape[0]).to(self.config.device)
         print("labels: ", labels)
+        accuracy = (logits.argmax(dim=1) == labels).float().mean()
+        loss = (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels)) / 2
+        return loss, accuracy
+
+    def contras_loss_new(self, pred_feat, feat1, feat2, logit_scale=1, mask = None):
+        if self.config.ngpu > 1:
+            pred_feat = F.normalize(pred_feat, dim=1)
+            feat1 = F.normalize(feat1, dim=1)
+            feat2 = F.normalize(feat2, dim=1)
+            pred_feat = torch.cat(torch.distributed.nn.all_gather(pred_feat), dim=0)
+            all_feat1 = torch.cat(torch.distributed.nn.all_gather(feat1), dim=0)
+            all_feat2 = torch.cat(torch.distributed.nn.all_gather(feat2), dim=0)
+            label_logits = all_feat1 * all_feat2
+            logits = logit_scale * pred_feat @ label_logits.T
+        else:
+            label_logits = F.normalize(feat1, dim=1) * F.normalize(feat2, dim=1)
+            logits = logit_scale * F.normalize(pred_feat, dim=1) @ label_logits.T
+        # if mask is not None:
+        #     logits = logits * mask
+        labels = label_logits.argmax(dim=1).to(self.config.device)
+        # print("labels: ", labels)
+
         accuracy = (logits.argmax(dim=1) == labels).float().mean()
         loss = (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels)) / 2
         return loss, accuracy
@@ -189,9 +209,8 @@ class Trainer(object):
             elif self.config.text_model == "vico":
                 vico_feat = self.vico_feat_dict[data["category"]]
                 text_feat = torch.vstack(vico_feat).to(self.config.device)
-            print("img_feat: ", data['img_feat'].shape)
+                
             img_feat = torch.vstack(data['img_feat']).to(self.config.device) 
-            print("img_feat_later: ", img_feat.shape)
 
             if self.config.training.use_mask:
                 img_text_sim = F.normalize(img_feat, dim=-1) @ F.normalize(text_feat, dim=-1).T
@@ -203,16 +222,19 @@ class Trainer(object):
             if len(idx) > 0:
                 if self.config.training.use_text_proj:
                     text_feat = self.text_proj(text_feat)
-                print("text_feat: ", text_feat.shape)
-                text_contras_loss, text_contras_acc = self.contras_loss(pred_feat[idx], text_feat, logit_scale=logit_scale, mask=mask)
-                loss += text_contras_loss * self.config.training.lambda_text_contras 
-                text_contras_acc_list.append(text_contras_acc.item())
+                # print("text_feat: ", text_feat.shape)
+                # text_contras_loss, text_contras_acc = self.contras_loss(pred_feat[idx], text_feat, logit_scale=logit_scale, mask=mask)
+                # loss += text_contras_loss * self.config.training.lambda_text_contras 
+                # text_contras_acc_list.append(text_contras_acc.item())
 
             if self.config.training.use_image_proj:
                 img_feat = self.image_proj(img_feat)
-            print("img_feat: ", img_feat.shape)
-            img_contras_loss, img_contras_acc = self.contras_loss(pred_feat, img_feat, logit_scale=logit_scale, mask=mask)
-            loss += img_contras_loss * self.config.training.lambda_img_contras
+            # print("img_feat: ", img_feat.shape)
+            # img_contras_loss, img_contras_acc = self.contras_loss(pred_feat, img_feat, logit_scale=logit_scale, mask=mask)
+            # loss += img_contras_loss * self.config.training.lambda_img_contras
+
+            loss, acc = self.contras_loss_new(pred_feat, text_feat, img_feat, logit_scale=logit_scale, mask=mask)
+
             loss.backward()
             self.optimizer.step()
             if self.config.training.use_openclip_optimizer_scheduler:
@@ -220,17 +242,17 @@ class Trainer(object):
             else:
                 self.scheduler.step()
             
-            img_contras_acc_list.append(img_contras_acc.item())
+            # img_contras_acc_list.append(img_contras_acc.item())
 
             if self.rank == 0 and self.step % self.config.training.log_freq == 0:
                 try:
                     if self.config.wandb_key is not None:
                         wandb.log({
                             "train/loss": loss.item(),
-                            "train/text_contras_loss": text_contras_loss.item() if len(idx) > 0 else 0,
-                            "train/img_contras_loss": img_contras_loss.item(),
-                            "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
-                            "train/img_contras_acc": img_contras_acc.item(),
+                            # "train/text_contras_loss": text_contras_loss.item() if len(idx) > 0 else 0,
+                            # "train/img_contras_loss": img_contras_loss.item(),
+                            # "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
+                            # "train/img_contras_acc": img_contras_acc.item(),
                             "train/lr": self.optimizer.param_groups[0]['lr'],
                             "train/epoch": self.epoch,
                             "train/step": self.step,
@@ -300,14 +322,14 @@ class Trainer(object):
             )
             print(f"Time taken for epoch {epoch}: {formatted_time}")
             
-            # if self.rank == 0:
-            #     # self.save_model('latest')
-            #     # self.test_modelnet40()
-            #     overall_acc = self.test_objaverse_lvis()
-            #     if overall_acc > best_lvis_acc:
-            #         best_lvis_acc = overall_acc
-            #         self.save_model('best_lvis')
-            #         logging.info("Best LVIS acc: {}".format(best_lvis_acc))
+            if self.rank == 0:
+                # self.save_model('latest')
+                # self.test_modelnet40()
+                overall_acc = self.test_objaverse_lvis()
+                if overall_acc > best_lvis_acc:
+                    best_lvis_acc = overall_acc
+                    self.save_model('best_lvis')
+                    logging.info("Best LVIS acc: {}".format(best_lvis_acc))
             if self.rank == 0 and self.epoch % self.config.training.save_freq == 0:
                 self.save_model('epoch_{}'.format(self.epoch))
 

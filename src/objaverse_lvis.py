@@ -27,11 +27,14 @@ class ObjaverseLVIS(Dataset):
         # print("index: ", index)
         path = self.split[index]['data_path'][1:]
         data = np.load(path, allow_pickle=True).item()
+        # print("data: ", data.keys())
         # print("data[xyz]: ", data['xyz'].shape)
         n = data['xyz'].shape[0]
         idx = random.sample(range(n), self.num_points)
         xyz = data['xyz'][idx]
         rgb = data['rgb'][idx]
+        # image_feat = torch.from_numpy(data['image_feat'])
+
 
         if self.y_up:
             # swap y and z axis
@@ -45,6 +48,12 @@ class ObjaverseLVIS(Dataset):
         
         assert not np.isnan(xyz).any()
 
+        if np.random.rand() < 0.5:
+            image_feat = data['thumbnail_feat']
+        else:
+            idx = np.random.randint(data['image_feat'].shape[0])
+            image_feat = data["image_feat"][idx]
+
         return {
             "xyz": torch.from_numpy(xyz).type(torch.float32),
             "rgb": torch.from_numpy(rgb).type(torch.float32),
@@ -52,6 +61,7 @@ class ObjaverseLVIS(Dataset):
             "group": self.split[index]['group'],
             "name":  self.split[index]['uid'],
             "category": self.category2idx[self.split[index]["category"]],
+            "image_feat": torch.from_numpy(image_feat)
         }
 
     def __len__(self):
@@ -68,6 +78,7 @@ def objaverse_lvis_collate_fn(list_data):
         "group": [data["group"] for data in list_data],
         "name": [data["name"] for data in list_data],
         "category": torch.tensor([data["category"] for data in list_data], dtype = torch.int32),
+        "image_feat": torch.stack([data["image_feat"] for data in list_data])
     }
 
 

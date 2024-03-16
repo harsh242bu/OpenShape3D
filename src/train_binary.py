@@ -39,6 +39,7 @@ class Trainer(object):
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.epoch = 0
+        self.best_epoch = 0
         self.step = 0
         self.best_acc = 0
 
@@ -136,11 +137,11 @@ class Trainer(object):
 
     def train(self):
         # best_acc = 0
-        overall_acc = self.test()
+        # overall_acc = self.test()
         
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
-            if self.rank == 0:
+            if self.rank == 0 and self.step % self.config.training.log_freq == 0:
                 logging.info("Epoch: {}".format(self.epoch))
 
             start_time = time.time()
@@ -157,11 +158,17 @@ class Trainer(object):
             overall_acc = self.test()
             if overall_acc > self.best_acc:
                 self.best_acc = overall_acc
+                self.best_epoch = self.epoch
                 self.save_model('best')
                 logging.info("Best acc: {}".format(self.best_acc))
 
             if self.rank == 0 and self.epoch % self.config.training.save_freq == 0:
                 self.save_model('epoch_{}'.format(self.epoch))
+
+        # cat_str = "_".join(self.cat_list)
+        # logging.info(f"Category list: {cat_str}")
+        # logging.info("Best acc: {}".format(self.best_acc))
+        return self.best_acc, self.best_epoch
 
     def test(self):
         self.model.eval()
@@ -199,8 +206,10 @@ class Trainer(object):
         if overall_acc > self.best_acc:
             self.best_acc = overall_acc
             self.save_model('best')
-
-        logging.info('Test ObjaverseLVIS: overall acc: {0}'.format(overall_acc))
+        
+        if self.rank == 0 and self.step % self.config.training.log_freq == 0:
+            logging.info(f"Test ObjaverseLVIS: overall acc: {overall_acc}")
+        
         if self.config.wandb_key is not None:
             wandb.log({"test/epoch": self.epoch,
                     "test/step": self.step,

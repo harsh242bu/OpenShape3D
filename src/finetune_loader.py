@@ -38,7 +38,7 @@ class FinetuneLoader(Dataset):
 
         
         for key, val in filter_data.items():
-            logging.info(f"Category: {ov_idx2category[key]}, Size: {len(val)}")
+            # logging.info(f"Category: {ov_idx2category[key]}, Size: {len(val)}")
             shuffle_val = val.copy()
             
             data_size = len(val)

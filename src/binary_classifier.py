@@ -65,13 +65,12 @@ class BinaryClassifier(torch.nn.Module):
 
         return x
 
-def main(rank, world_size, cli_args, extras):
+def binary_main(rank, world_size, cli_args, extras, *args):
+    cat_list = args[0]
     setup(rank, world_size)
     config = load_config(cli_args.config, cli_args = vars(cli_args), extra_args = extras)
 
     setup_cache(config)
-    if rank == 0:
-        logging.info("config: {}".format(str(config)))
 
     config.trial_name = config.get('trial_name') + datetime.now().strftime('@%Y%m%d-%H%M%S')
     config.ckpt_dir = config.get('ckpt_dir') or os.path.join(config.exp_dir, config.trial_name, 'ckpt')
@@ -111,10 +110,10 @@ def main(rank, world_size, cli_args, extras):
     base_model = load_model(config, model_name)
     model = BinaryClassifier(base_model, train_loader.dataset.clip_cat_feat, config.device).to(config.device)
 
-    if rank == 0:
-        total_params = sum(p.numel() for p in model.parameters())
-        logging.info(model)
-        logging.info("Network:{}, Number of parameters: {}".format(model_name, total_params))
+    # if rank == 0:
+    #     total_params = sum(p.numel() for p in model.parameters())
+    #     logging.info(model)
+    #     logging.info("Network:{}, Number of parameters: {}".format(model_name, total_params))
 
     torch.cuda.set_device(rank)
     model.cuda(rank)
@@ -132,12 +131,12 @@ def main(rank, world_size, cli_args, extras):
     logging.info("Test loader size: {}".format(len(test_loader)))
     logging.info("Test loader dataset size: {}".format(len(test_loader.dataset)))
 
-    if rank == 0 and train_loader is not None:
-        logging.info("Train iterations: {}".format(len(train_loader)))
+    # if rank == 0 and train_loader is not None:
+    #     logging.info("Train iterations: {}".format(len(train_loader)))
 
     params = list(model.module.fc1.parameters()) #+ list(model.module.fc2.parameters())
     # params = list(model.parameters())
-    logging.info("Trainable parameters: {}".format(len(params)))
+    # logging.info("Trainable parameters: {}".format(len(params)))
     # print("Parameters: ", params)
 
     if config.training.use_openclip_optimizer_scheduler:
@@ -160,6 +159,19 @@ def main(rank, world_size, cli_args, extras):
     if rank == 0 and config.wandb_key is not None:
         wandb.finish()
     cleanup()
+
+
+if __name__ == '__main__':
+    cli_args, extras = parse_args(sys.argv[1:])
+    # config = load_config(cli_args.config, cli_args = vars(cli_args), extra_args = extras)
+    
+    world_size = cli_args.ngpu
+    mp.spawn(
+        binary_main,
+        args=(world_size, cli_args, extras, cat_list),
+        nprocs=world_size
+    )
+
 
 # def eval(config):
 #     setup_cache(config)
@@ -211,15 +223,3 @@ def main(rank, world_size, cli_args, extras):
 #     if config.wandb_key is not None:
 #         wandb.finish()
 #     cleanup()
-
-if __name__ == '__main__':
-    cli_args, extras = parse_args(sys.argv[1:])
-    # config = load_config(cli_args.config, cli_args = vars(cli_args), extra_args = extras)
-    
-    world_size = cli_args.ngpu
-    mp.spawn(
-        main,
-        args=(world_size, cli_args, extras),
-        nprocs=world_size
-    )
-

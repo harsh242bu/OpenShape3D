@@ -1,6 +1,7 @@
 project_name: 3D_CLIP
 clip_embed_dim: 1280
 clip_embed_version: OpenCLIP
+vico_embed_dim: 500
 model:
   name: PointBERT 
   in_channel: 6
@@ -18,9 +19,9 @@ training:
   beta2: 0.999
   eps: 1.0e-8
   warmup: 10000
-  max_epoch: 1000
-  log_freq: 10
-  save_freq: 20
+  max_epoch: 80
+  log_freq: 1
+  save_freq: 1
   lambda_img_contras: 1
   lambda_text_contras: 1
   use_image_proj: False 
@@ -28,6 +29,8 @@ training:
   logit_scale_init: 14.28
   use_mask: False
   mask_threshold: 0.1
+  freeze_layers: False
+  use_triplet_loss: True
 
 dataset:
   name: Four
@@ -35,7 +38,9 @@ dataset:
   train_partial: -1
   num_points: 10000 
   num_workers: 6
-  train_batch_size: 200
+  # train_batch_size: 150
+  train_batch_size: 225 #For A100 gpu
+  test_batch_size: 100
   use_knn_negative_sample: False
   negative_sample_num: 1
   knn_path: meta_data/point_feat_knn.npy
@@ -55,18 +60,17 @@ modelnet40:
   test_pc: meta_data/modelnet40/test_pc.npy
   num_points: 10000 
   num_workers: 0
-  test_batch_size: 50
+  test_batch_size: 100
   clip_feat_path: meta_data/modelnet40/cat_name_pt_feat.npy
   y_up: True
 
 objaverse_lvis:
     split: meta_data/split/lvis.json
     clip_feat_path: meta_data/lvis_cat_name_pt_feat.npy
+    img_feat_path: meta_data/all_image_feat.npy
     num_points: 10000 
     num_workers: 6
-    # batch_size: 170
-    batch_size: 9000
-    # batch_size: 120
+    batch_size: 100
     y_up: True
     normalize: True
     use_color: True

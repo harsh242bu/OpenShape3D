@@ -14,6 +14,7 @@ from utils.misc import load_config, dump_config
 from utils.logger import setup_logging
 from utils.scheduler import cosine_lr
 from train import Trainer
+from train_triplet_loss import TripletTrainer
 from models.LogitScaleNetwork import LogitScaleNetwork
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -21,10 +22,12 @@ import torch.multiprocessing as mp
 
 from utils_func import load_model
 
+# cat_list = ['goldfish', 'fish', 'salmon_(fish)', 'earphone', 'headset', 'blazer', 'jacket', 'teakettle', 'teapot', 'kettle']
+cat_list = None
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
-    os.environ['MASTER_PORT'] = '12355'
+    os.environ['MASTER_PORT'] = '12356'
     dist.init_process_group("nccl", rank=rank, world_size=world_size)
 
 def setup_cache(config):
@@ -81,7 +84,7 @@ def main(rank, world_size, cli_args, extras):
         
         torch.cuda.set_device(rank)
         model.cuda(rank)
-        model = DDP(model, device_ids=[rank], output_device=rank, find_unused_parameters=True)
+        model = DDP(model, device_ids=[rank], output_device=rank, find_unused_parameters=False)
         # if config.model.name.startswith('Mink'):
         #     model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
         #     logging.info("Using MinkowskiSyncBatchNorm")
@@ -97,7 +100,7 @@ def main(rank, world_size, cli_args, extras):
         image_proj = DDP(image_proj, device_ids=[rank], output_device=rank, find_unused_parameters=False)
         text_proj = DDP(text_proj, device_ids=[rank], output_device=rank, find_unused_parameters=False)
 
-        train_loader = data.make(config, 'train', rank, world_size, "antenna_windmill", True)
+        train_loader = data.make(config, 'train', rank, world_size, cat_list, True)
         print("train_loader size: ", len(train_loader))
         print("train_loader dataset size: ", len(train_loader.dataset))
 
@@ -155,10 +158,12 @@ def main(rank, world_size, cli_args, extras):
             optimizer = torch.optim.AdamW(params, lr=config.training.lr)
             scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config.training.lr_decay_step, gamma=config.training.lr_decay_rate)
 
-
-        trainer = Trainer(rank, config, model, logit_scale, image_proj, text_proj, optimizer, scheduler, \
-                        train_loader, modelnet40_loader, objaverse_lvis_loader, scanobjectnn_loader)
-
+        if config.training.use_triplet_loss:
+            trainer = TripletTrainer(rank, config, model, logit_scale, image_proj, text_proj, optimizer, scheduler, \
+                                     train_loader, modelnet40_loader, objaverse_lvis_loader, scanobjectnn_loader)
+        else:
+            trainer = Trainer(rank, config, model, logit_scale, image_proj, text_proj, optimizer, scheduler, \
+                              train_loader, modelnet40_loader, objaverse_lvis_loader, scanobjectnn_loader)
 
         if config.resume is not None:
             trainer.load_from_checkpoint(config.resume)
