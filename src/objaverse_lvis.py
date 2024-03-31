@@ -108,6 +108,7 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
     logits_all = []
     labels_all = []
     data_xyz = []
+    unique_labels = []
 
     # pred_feat:  torch.Size([70, 1280])
     # clip_text_feat:  torch.Size([1156, 1280])
@@ -133,7 +134,9 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
             data_xyz.append(data['xyz_dense'])
             logits_all.append(logits.detach())
             labels_all.append(labels)
+            unique_labels.append(torch.unique(labels))
             # calculate per class accuracy
+
             for i in torch.unique(labels):
                 idx = (labels == i)
                 if idx.sum() > 0:
@@ -141,8 +144,14 @@ def test_objaverse_lvis(model, config, objaverse_lvis_loader, text_proj, device)
                     per_cat_count[i] += idx.sum()
             runs += 1
             # print("runs complete: ", runs)
-
+    unique_labels = torch.unique(torch.cat(unique_labels)).long()
+    print("unique_labels: ", unique_labels)
+    print("unique_labels shape: ", unique_labels.shape)
+    
     topk_acc, correct = calc_accuracy(torch.cat(logits_all), torch.cat(labels_all), topk=(1,3,5,))
+
+    per_cat_correct = per_cat_correct[unique_labels]
+    per_cat_count = per_cat_count[unique_labels]
 
     overall_acc = per_cat_correct.sum() / per_cat_count.sum()
     per_cat_acc = per_cat_correct / per_cat_count

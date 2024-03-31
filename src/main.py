@@ -25,9 +25,9 @@ from utils_func import load_model
 # cat_list = ['goldfish', 'fish', 'salmon_(fish)', 'earphone', 'headset', 'blazer', 'jacket', 'teakettle', 'teapot', 'kettle']
 cat_list = None
 
-def setup(rank, world_size):
+def setup(rank, world_size, port='12356'):
     os.environ['MASTER_ADDR'] = 'localhost'
-    os.environ['MASTER_PORT'] = '12356'
+    os.environ['MASTER_PORT'] = port
     dist.init_process_group("nccl", rank=rank, world_size=world_size)
 
 def setup_cache(config):
@@ -42,12 +42,15 @@ def cleanup():
     dist.destroy_process_group()
 
 def main(rank, world_size, cli_args, extras):
+    print("cli_args: ", cli_args)
     print("rank: ", rank)
-    setup(rank, world_size)
+    setup(rank, world_size, cli_args.port)
 
     config = load_config(cli_args.config, cli_args = vars(cli_args), extra_args = extras)
     setup_cache(config)
     print("config: ", config)
+
+    torch.manual_seed(config.random_seed)
 
     if config.autoresume:
         config.trial_name = config.get('trial_name') + "@autoresume"
@@ -71,6 +74,9 @@ def main(rank, world_size, cli_args, extras):
         setup_logging(config.log_path, config.log_level)
         dump_config(os.path.join(config.exp_dir, config.trial_name, 'config.yaml'), config)
         logging.info("Using {} GPU(s).".format(config.ngpu))
+        logging.info("config: {}".format(str(config)))
+        logging.info("random seed: {}".format(config.random_seed))
+        
         if config.wandb_key is not None:
             wandb.login(key=config.wandb_key)
             wandb.init(project=config.project_name, name=config.trial_name, config=OmegaConf.to_object(config))
@@ -84,7 +90,7 @@ def main(rank, world_size, cli_args, extras):
         
         torch.cuda.set_device(rank)
         model.cuda(rank)
-        model = DDP(model, device_ids=[rank], output_device=rank, find_unused_parameters=False)
+        model = DDP(model, device_ids=[rank], output_device=rank, find_unused_parameters=True)
         # if config.model.name.startswith('Mink'):
         #     model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
         #     logging.info("Using MinkowskiSyncBatchNorm")
@@ -122,6 +128,8 @@ def main(rank, world_size, cli_args, extras):
                 logging.info("Train iterations: {}".format(len(train_loader)))
 
         if config.training.freeze_layers:
+            if rank == 0:
+                logging.info("Finetuning model")
             # Step 1: Freeze all parameters
             for name, param in model.named_parameters():
                 param.requires_grad = False

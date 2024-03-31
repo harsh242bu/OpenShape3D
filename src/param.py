@@ -67,8 +67,8 @@ def parse_args(args):
     )
     parser.add_argument(
         "--wandb_key",
-        # default="3051f76ad3503c10871179fb154be79d5e561ccc",
-        default=None,
+        default="3051f76ad3503c10871179fb154be79d5e561ccc",
+        # default=None,
         type=str,
         help="wandb login key"
     )
@@ -93,6 +93,18 @@ def parse_args(args):
         "--default_batch_size",
         action="store_true",
         help="use default batch size as whole dataset"
+    )
+    parser.add_argument(
+        "--port",
+        default='12356',
+        type=str,
+        help="port number"
+    )
+    parser.add_argument(
+        "--random_seed",
+        default=2020,
+        type=int,
+        help="random seed"
     )
     args, extras = parser.parse_known_args()
     return args, extras

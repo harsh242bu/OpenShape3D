@@ -46,6 +46,10 @@ class TripletTrainer(object):
         self.text_feat_nbrs = NearestNeighbors(n_neighbors=2, algorithm='auto').fit(self.lvis_eval_text_feat)
         self.img_feat_nbrs = NearestNeighbors(n_neighbors=2, algorithm='auto').fit(self.lvis_eval_img_feat)
 
+        logging.info(f"Contras loss weight: {self.config.training.contras_loss_weight}")
+        logging.info(f"Triplet loss weight: {self.config.training.triplet_loss_weight}")
+        logging.info(f"Triples loss margin: {self.config.training.triplet_loss_margin}")
+
     def load_from_checkpoint_lora(self, path):
         checkpoint = torch.load(path)
         if self.config.training.use_text_proj:
@@ -156,7 +160,7 @@ class TripletTrainer(object):
         loss = (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels)) / 2
         return loss, accuracy
     
-    def triplet_loss(self, pred_feat, txt_feat, img_feat, logit_scale=1, margin=0.4):
+    def triplet_loss_old(self, pred_feat, txt_feat, img_feat, logit_scale=1, margin=0.4):
         # Calculating the nearest neighbors from batch features to lvis test features 
         _, txt_nbr_ind = self.text_feat_nbrs.kneighbors(txt_feat)
         _, img_nbr_ind = self.img_feat_nbrs.kneighbors(img_feat)
@@ -170,12 +174,46 @@ class TripletTrainer(object):
         pos_img_logits = logit_scale * F.normalize(pred_feat, dim=1) @ F.normalize(img_feat, dim=1).T
         neg_img_logits = logit_scale * F.normalize(pred_feat, dim=1) @ F.normalize(img_feat_nbr_mat, dim=1).T
 
+        #Using only diagonal
+        # pos_txt_logits = torch.diag(pos_txt_logits)
+        # neg_txt_logits = torch.diag(neg_txt_logits)
+        # pos_img_logits = torch.diag(pos_img_logits)
+        # neg_img_logits = torch.diag(neg_img_logits)
+
         # Calculating the triplet loss
         txt_triplet_loss = torch.clamp(neg_txt_logits - pos_txt_logits + margin, 0, None) 
         img_triplet_loss = torch.clamp(neg_img_logits - pos_img_logits + margin, 0, None)
         triplet_loss = txt_triplet_loss.mean() + img_triplet_loss.mean()
         return triplet_loss
+    
+    def triplet_loss(self, pred_feat, txt_feat, img_feat, logit_scale=1, margin=0.4):
+        # Calculating the nearest neighbors from batch features to lvis test features 
+        _, txt_nbr_ind = self.text_feat_nbrs.kneighbors(txt_feat)
+        _, img_nbr_ind = self.img_feat_nbrs.kneighbors(img_feat)
 
+        # This matrix is created to store the nearest neighbor features for each type of feature
+        txt_feat_nbr_mat = torch.from_numpy(self.lvis_eval_text_feat[txt_nbr_ind[:, 0]])
+        img_feat_nbr_mat = torch.from_numpy(self.lvis_eval_img_feat[img_nbr_ind[:, 0]])
+        
+        pos_txt_logits = logit_scale * F.normalize(pred_feat, dim=1) * F.normalize(txt_feat, dim=1)
+        neg_txt_logits = logit_scale * F.normalize(pred_feat, dim=1) * F.normalize(txt_feat_nbr_mat, dim=1)
+        pos_img_logits = logit_scale * F.normalize(pred_feat, dim=1) * F.normalize(img_feat, dim=1)
+        neg_img_logits = logit_scale * F.normalize(pred_feat, dim=1) * F.normalize(img_feat_nbr_mat, dim=1)
+
+        pos_txt_logits = pos_txt_logits.sum(dim=1).view(1, -1)
+        neg_txt_logits = neg_txt_logits.sum(dim=1).view(-1, 1)
+        pos_img_logits = pos_img_logits.sum(dim=1).view(1, -1)
+        neg_img_logits = neg_img_logits.sum(dim=1).view(-1, 1)
+
+        # Calculating the triplet loss
+        txt_triplet_loss = torch.clamp(neg_txt_logits - pos_txt_logits + margin, 0, None)
+        img_triplet_loss = torch.clamp(neg_img_logits - pos_img_logits + margin, 0, None)
+        # print("txt_triplet_loss: ", txt_triplet_loss.shape)
+        # print("img_triplet_loss: ", img_triplet_loss.shape)
+        triplet_loss = txt_triplet_loss.mean() + img_triplet_loss.mean()
+
+        return triplet_loss
+    
     def train_one_epoch(self):
         self.model.train()
         if self.config.training.use_text_proj:
@@ -198,7 +236,7 @@ class TripletTrainer(object):
             # print("features: ", data['features'].shape)
             self.step += 1
             self.optimizer.zero_grad()
-            loss = 0
+            contras_loss = 0
             if not self.config.model.get("use_dense", False):
                 pred_feat = self.model(data['xyz'], data['features'], \
                                         device = self.config.device, \
@@ -228,20 +266,22 @@ class TripletTrainer(object):
                     text_feat = self.text_proj(text_feat)
 
                 text_contras_loss, text_contras_acc = self.contras_loss(pred_feat[idx], text_feat, logit_scale=logit_scale, mask=mask)
-                loss += text_contras_loss * self.config.training.lambda_text_contras 
+                contras_loss += text_contras_loss * self.config.training.lambda_text_contras 
                 text_contras_acc_list.append(text_contras_acc.item())
 
             if self.config.training.use_image_proj:
                 img_feat = self.image_proj(img_feat)
                 
             img_contras_loss, img_contras_acc = self.contras_loss(pred_feat, img_feat, logit_scale=logit_scale, mask=mask)
-            loss += img_contras_loss * self.config.training.lambda_img_contras
+            contras_loss += img_contras_loss * self.config.training.lambda_img_contras
             # print("contras_loss: ", loss)
+            loss = contras_loss * self.config.training.contras_loss_weight
 
             triplet_loss = 0
             if self.config.training.use_triplet_loss:
-                triplet_loss = self.triplet_loss(pred_feat.cpu(), text_feat.cpu(), img_feat.cpu(), logit_scale=logit_scale.cpu())
-                loss += triplet_loss
+                triplet_loss = self.triplet_loss(pred_feat.cpu(), text_feat.cpu(), img_feat.cpu(), 
+                                                 logit_scale=logit_scale.cpu(), margin=self.config.training.triplet_loss_margin)
+                loss += triplet_loss * self.config.training.triplet_loss_weight
             # print("triplet_loss: ", triplet_loss)
 
             loss.backward()
@@ -253,25 +293,24 @@ class TripletTrainer(object):
             
             img_contras_acc_list.append(img_contras_acc.item())
 
-            if self.rank == 0 and self.step % self.config.training.log_freq == 0:
-                try:
-                    if self.config.wandb_key is not None:
-                        wandb.log({
-                            "train/loss": loss.item(),
-                            "train/text_contras_loss": text_contras_loss.item() if len(idx) > 0 else 0,
-                            "train/img_contras_loss": img_contras_loss.item(),
-                            "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
-                            "train/img_contras_acc": img_contras_acc.item(),
-                            "train/triplet_loss": triplet_loss.item(),
-                            "train/lr": self.optimizer.param_groups[0]['lr'],
-                            "train/epoch": self.epoch,
-                            "train/step": self.step,
-                            "train/logit_scale": logit_scale,
-                            "train/has_text": len(idx),
-                            "train/filtered_pair": (mask == False).sum() if mask is not None else 0
-                        })
-                except:
-                    print("wandb log error", flush=True)
+        if self.rank == 0 and self.step % self.config.training.log_freq == 0:
+            try:
+                if self.config.wandb_key is not None:
+                    wandb.log({
+                        "train/loss": loss.item(),
+                        "train/contras_loss": contras_loss.item() if len(idx) > 0 else 0,
+                        "train/text_contras_acc": text_contras_acc.item() if len(idx) > 0 else 0,
+                        "train/img_contras_acc": img_contras_acc.item(),
+                        "train/triplet_loss": triplet_loss.item(),
+                        "train/lr": self.optimizer.param_groups[0]['lr'],
+                        "train/epoch": self.epoch,
+                        "train/step": self.step,
+                        "train/logit_scale": logit_scale,
+                        "train/has_text": len(idx),
+                        "train/filtered_pair": (mask == False).sum() if mask is not None else 0
+                    })
+            except:
+                print("wandb log error", flush=True)
         if self.rank == 0: 
             logging.info('Train: text_cotras_acc: {0} image_contras_acc: {1}'\
                     .format(np.mean(text_contras_acc_list) if len(text_contras_acc_list) > 0 else 0,
@@ -320,6 +359,7 @@ class TripletTrainer(object):
 
     def train(self):
         best_lvis_acc = 0
+        # overall_acc = self.test_objaverse_lvis()
         for epoch in range(self.epoch, self.config.training.max_epoch):
             self.epoch = epoch
             if self.rank == 0:

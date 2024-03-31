@@ -19,7 +19,7 @@ training:
   beta2: 0.999
   eps: 1.0e-8
   warmup: 10000
-  max_epoch: 80
+  max_epoch: 90
   log_freq: 1
   save_freq: 1
   lambda_img_contras: 1
@@ -29,7 +29,11 @@ training:
   logit_scale_init: 14.28
   use_mask: False
   mask_threshold: 0.1
-  freeze_layers: False
+# New parameters 
+  contras_loss_weight: 1
+  triplet_loss_margin: 0.1
+  triplet_loss_weight: 0.1
+  freeze_layers: True
   use_triplet_loss: True
 
 dataset:
@@ -38,8 +42,10 @@ dataset:
   train_partial: -1
   num_points: 10000 
   num_workers: 6
-  # train_batch_size: 150
-  train_batch_size: 225 #For A100 gpu
+  # train_batch_size: 150 # A40
+  train_batch_size: 206 #A40 fintune 1 layer
+  # train_batch_size: 220 #For A100 gpu
+  # train_batch_size: 340 #For A100 gpu finetune 1 layer
   test_batch_size: 100
   use_knn_negative_sample: False
   negative_sample_num: 1

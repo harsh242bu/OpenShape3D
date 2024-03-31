@@ -11,6 +11,8 @@ exp
 wandb
 .vscode
 finetune
+batch_jobs
+records
 
 # Python gitignor template
 # Byte-compiled / optimized / DLL files

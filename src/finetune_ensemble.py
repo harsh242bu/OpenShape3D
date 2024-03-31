@@ -91,7 +91,7 @@ base_model_no_classification.eval()
 base_proj_layer.eval()
 finetune_proj_layer.eval()
 
-w2 = 0.15 # weight to finetuned model
+w2 = 0.7 # weight to finetuned model
 ensemble_model = EnsembleModel(base_model_no_classification, base_proj_layer, finetune_proj_layer, 1-w2, w2)
 ensemble_model.to(device)
 ensemble_model.eval()
@@ -102,8 +102,10 @@ text_proj = torch.nn.Linear(config.model.out_channel, config.model.out_channel).
 
 # objaverse_lvis_loader = make_objaverse_lvis(config)
 
-phase = "all"
-finetune_test_loader = data.make(config, phase, None, None, None)
+# phase = "all"
+phase = "test"
+cat_list = ['goldfish', 'fish', 'salmon_(fish)', 'earphone', 'headset', 'blazer', 'jacket', 'teakettle', 'teapot', 'kettle']
+finetune_test_loader = data.make(config, phase, None, None, cat_list)
 
 # print("objaverse_lvis total batches: ", len(objaverse_lvis_loader))
 # print("objaverse_lvis dataset size: ", len(objaverse_lvis_loader.dataset))

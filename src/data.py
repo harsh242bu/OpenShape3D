@@ -290,7 +290,7 @@ def make(config, phase, rank, world_size, *args):
             collate_fn=minkowski_collate_fn,
             batch_size=batch_size,
             pin_memory = True,
-            drop_last=True,
+            drop_last=False,
             sampler=sampler
         )
     elif config.dataset.name == "lvis_filter":
@@ -316,7 +316,7 @@ def make(config, phase, rank, world_size, *args):
             collate_fn=finetune_collate_fn,
             batch_size=batch_size,
             pin_memory = True,
-            drop_last=True,
+            drop_last=False,
             sampler=sampler
         )
 

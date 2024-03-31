@@ -23,6 +23,7 @@ class FinetuneLoader(Dataset):
         lvis_test = json.load(open(lvis_test_file, "r"))
 
         cat_idx_list = [ov_category2idx[cat] for cat in cat_list]
+        print("cat_idx_list: ", cat_idx_list)
 
         filter_data = {}
         for i in cat_idx_list:
@@ -35,8 +36,8 @@ class FinetuneLoader(Dataset):
 
         train_data = []
         test_data = []
+        # print("filter_data: ", filter_data[562])
 
-        
         for key, val in filter_data.items():
             # logging.info(f"Category: {ov_idx2category[key]}, Size: {len(val)}")
             shuffle_val = val.copy()
